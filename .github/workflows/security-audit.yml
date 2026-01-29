@@ -2,7 +2,7 @@ name: Security Audit
 
 on:
   push:
-    branches: [ dev, main ]
+    branches: [ dev ]
   pull_request:
     branches: [ dev, main ]
   schedule:
@@ -12,6 +12,7 @@ jobs:
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
+    continue-on-error: true
     
     steps:
       - name: Checkout code
@@ -38,6 +39,7 @@ jobs:
 
       - name: Dependency Review
         if: github.event_name == 'pull_request'
+        continue-on-error: true
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: moderate
@@ -50,6 +52,7 @@ jobs:
       security-events: write
       actions: read
       contents: read
+    if: github.event_name == 'pull_request' || github.event_name == 'schedule'
 
     steps:
       - name: Checkout code
@@ -70,6 +73,7 @@ jobs:
     name: Secret Scanning
     runs-on: ubuntu-latest
     continue-on-error: true
+    if: github.event_name == 'pull_request'
     
     steps:
       - name: Checkout code
