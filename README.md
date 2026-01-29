@@ -461,19 +461,20 @@ NEXT_PUBLIC_API_URL=https://ssl.winsnip.xyz
 
 ### Deployment
 
-#### Vercel (Recommended)
+**🚀 Vercel (Recommended)**
+
+1. Import repository to Vercel
+2. Add environment variables
+3. Deploy automatically on push
+
+**🐳 Docker**
 
 ```bash
-npm run build
-vercel --prod
+docker build -t winscan .
+docker run -p 3000:3000 winscan
 ```
 
-Add environment variable in Vercel dashboard:
-```
-NEXT_PUBLIC_API_URL=https://ssl.winsnip.xyz
-```
-
-#### VPS with PM2
+**🖥️ VPS with PM2**
 
 ```bash
 npm run build
@@ -482,12 +483,7 @@ pm2 save
 pm2 startup
 ```
 
-#### Docker
-
-```bash
-docker build -t winscan .
-docker run -p 3000:3000 winscan
-```
+📚 **Full deployment guide:** [.github/DEPLOYMENT.md](.github/DEPLOYMENT.md)
 
 ---
 
@@ -545,6 +541,28 @@ This project is licensed under **MIT License with Additional Restrictions**.
 **For full license terms, see [LICENSE](LICENSE) file.**
 
 Violation of these terms may result in legal action and license revocation.
+
+---
+
+## 💖 Support the Project
+
+WinScan is free and open-source. If you find it useful, please consider supporting us!
+
+<div align="center">
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-WinScan-red?style=for-the-badge&logo=github-sponsors)](https://github.com/sponsors/winsnip-official)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/winsnip)
+
+**Your sponsorship helps us:**
+- 🚀 Add more chains
+- ⚡ Improve performance
+- 🛠️ Develop new features
+- 📚 Better documentation
+- 💰 Cover infrastructure costs
+
+[Learn more about sponsorship](.github/SPONSORS.md)
+
+</div>
 
 ---
 

@@ -1,0 +1,5 @@
+# GitHub Sponsors configuration
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+github: winsnip-official
+custom: ['https://winsnip.xyz/sponsor', 'https://www.buymeacoffee.com/winsnip']
