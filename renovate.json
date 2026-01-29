@@ -1,0 +1,37 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "schedule": ["before 3am on Monday"],
+  "timezone": "Asia/Jakarta",
+  "labels": ["dependencies", "renovate"],
+  "assignees": ["winsnip-official"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": false,
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["^@types/"],
+      "groupName": "TypeScript definitions"
+    },
+    {
+      "matchPackagePatterns": ["^next"],
+      "groupName": "Next.js packages"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["winsnip-official"]
+  }
+}
