@@ -36,7 +36,7 @@
     "use-debounce": "^10.1.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^25",
     "@types/react": "^18",
     "@types/react-dom": "^19",
     "@types/react-simple-maps": "^3.0.6",
