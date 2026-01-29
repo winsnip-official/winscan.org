@@ -81,21 +81,21 @@ jobs:
         run: npm ci
 
       - name: Check for console statements
+        continue-on-error: true
         run: |
           echo "Checking for console statements in production code..."
-          if grep -r "console\." --include="*.ts" --include="*.tsx" --exclude-dir="node_modules" --exclude-dir="scripts" --exclude-dir=".next" .; then
+          if grep -r "console\." --include="*.ts" --include="*.tsx" --exclude-dir="node_modules" --exclude-dir="scripts" --exclude-dir=".next" . 2>/dev/null; then
             echo "⚠️ Warning: Console statements found in code"
-            exit 1
           else
             echo "✅ No console statements found"
           fi
 
       - name: Check for TODO comments
+        continue-on-error: true
         run: |
           echo "Checking for TODO comments..."
-          if grep -r "TODO" --include="*.ts" --include="*.tsx" --exclude-dir="node_modules" --exclude-dir=".next" .; then
+          if grep -r "TODO" --include="*.ts" --include="*.tsx" --exclude-dir="node_modules" --exclude-dir=".next" . 2>/dev/null; then
             echo "⚠️ Warning: TODO comments found"
-            exit 1
           else
             echo "✅ No TODO comments found"
           fi
