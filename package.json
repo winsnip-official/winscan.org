@@ -1,5 +1,5 @@
 {
-  "name": "blockchain-explorer",
+  "name": "Winscan.org",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -27,8 +27,13 @@
     "next": "16.1.6",
     "node-fetch": "^3.3.2",
     "osmojs": "^16.15.0",
+<<<<<<< HEAD
     "react": "^19.2.4",
     "react-dom": "^19.2.3",
+=======
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+>>>>>>> dev
     "react-simple-maps": "^3.0.0",
     "react-virtualized-auto-sizer": "^2.0.2",
     "react-window": "^2.2.5",
