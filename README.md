@@ -9,9 +9,7 @@
   [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
   [![Twitter](https://img.shields.io/badge/Twitter-@winsnip-1DA1F2?style=for-the-badge)](https://twitter.com/winsnip)
   
-  [![Security Audit](https://github.com/winsnip-official/winscan.org/actions/workflows/security-audit.yml/badge.svg)](https://github.com/winsnip-official/winscan.org/actions/workflows/security-audit.yml)
-  [![CI/CD](https://github.com/winsnip-official/winscan.org/actions/workflows/ci.yml/badge.svg)](https://github.com/winsnip-official/winscan.org/actions/workflows/ci.yml)
-  [![Deploy](https://github.com/winsnip-official/winscan.org/actions/workflows/deploy-production.yml/badge.svg)](https://github.com/winsnip-official/winscan.org/actions/workflows/deploy-production.yml)
+  [![Build](https://github.com/winsnip-official/winscan.org/actions/workflows/build.yml/badge.svg)](https://github.com/winsnip-official/winscan.org/actions/workflows/build.yml)
   [![Known Vulnerabilities](https://img.shields.io/badge/vulnerabilities-0%20critical-brightgreen)](https://github.com/winsnip-official/winscan.org/security)
   [![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen)](https://github.com/winsnip-official/winscan.org/blob/dev/package.json)
   
