@@ -192,10 +192,8 @@ export default function IBCBridgeModal({
             // Fetch balance
             try {
               const { SigningStargateClient } = await import('@cosmjs/stargate');
-              const { Registry } = await import('@cosmjs/proto-signing');
-              const registry = new Registry();
               
-              const client = await SigningStargateClient.connectWithSigner(rpc, offlineSigner, { registry });
+              const client = await SigningStargateClient.connectWithSigner(rpc, offlineSigner);
               const bal = await client.getBalance(accounts[0].address, denom);
               
               // Use correct exponent for balance formatting

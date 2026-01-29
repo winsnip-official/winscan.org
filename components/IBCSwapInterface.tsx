@@ -78,16 +78,11 @@ export default function IBCSwapInterface({ chain }: IBCSwapInterfaceProps) {
             // Fetch balance
             try {
               const { SigningStargateClient } = await import('@cosmjs/stargate');
-              const { Registry } = await import('@cosmjs/proto-signing');
-              
-              // Register Ethermint pubkey type for coin_type 60 chains
-              const registry = new Registry();
               
               const rpcEndpoint = chain.rpc[0]?.address || chain.rpc[0];
               const client = await SigningStargateClient.connectWithSigner(
                 typeof rpcEndpoint === 'string' ? rpcEndpoint : rpcEndpoint.address,
-                offlineSigner,
-                { registry }
+                offlineSigner
               );
               const bal = await client.getBalance(accounts[0].address, chain.assets[0].base);
               const formatted = (parseInt(bal.amount) / 1e6).toFixed(6);
@@ -135,16 +130,11 @@ export default function IBCSwapInterface({ chain }: IBCSwapInterfaceProps) {
         // Fetch balance
         try {
           const { SigningStargateClient } = await import('@cosmjs/stargate');
-          const { Registry } = await import('@cosmjs/proto-signing');
-          
-          // Register Ethermint pubkey type for coin_type 60 chains
-          const registry = new Registry();
           
           const rpcEndpoint = chain.rpc[0]?.address || chain.rpc[0];
           const client = await SigningStargateClient.connectWithSigner(
             typeof rpcEndpoint === 'string' ? rpcEndpoint : rpcEndpoint.address,
-            offlineSigner,
-            { registry }
+            offlineSigner
           );
           const bal = await client.getBalance(accounts[0].address, chain.assets[0].base);
           const formatted = (parseInt(bal.amount) / 1e6).toFixed(6);
@@ -178,15 +168,11 @@ export default function IBCSwapInterface({ chain }: IBCSwapInterfaceProps) {
       const senderAddress = accounts[0].address;
 
       const { SigningStargateClient } = await import('@cosmjs/stargate');
-      const { Registry } = await import('@cosmjs/proto-signing');
-      
-      const registry = new Registry();
       
       const rpcEndpoint = chain.rpc[0]?.address || chain.rpc[0];
       const client = await SigningStargateClient.connectWithSigner(
         typeof rpcEndpoint === 'string' ? rpcEndpoint : rpcEndpoint.address,
-        offlineSigner,
-        { registry }
+        offlineSigner
       );
 
       // Check if chain has poolmanager (Osmosis-based chains)
