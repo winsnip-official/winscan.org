@@ -176,7 +176,8 @@ async function createEvmAccountParser() {
 
 async function createEvmRegistry() {
   try {
-    const { Registry, defaultRegistryTypes } = await import('@cosmjs/stargate');
+    const { defaultRegistryTypes } = await import('@cosmjs/stargate');
+    const { Registry } = await import('@cosmjs/proto-signing');
     
     if (typeof Registry !== 'function') {
       console.warn('Registry is not a constructor, using default registry');
@@ -196,7 +197,8 @@ async function createEvmRegistry() {
 // Create registry with custom gov module support (for AtomOne, etc)
 async function createCustomGovRegistry(chainId: string) {
   try {
-    const { Registry, defaultRegistryTypes } = await import('@cosmjs/stargate');
+    const { defaultRegistryTypes } = await import('@cosmjs/stargate');
+    const { Registry } = await import('@cosmjs/proto-signing');
     
     if (typeof Registry !== 'function') {
       console.warn('Registry is not a constructor, using default registry');

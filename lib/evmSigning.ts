@@ -243,7 +243,8 @@ export async function signTransactionForEvm(
   autoSimulate: boolean = true,
   customRegistry?: any
 ): Promise<any> {
-  const { Registry, makeSignDoc, defaultRegistryTypes } = await import('@cosmjs/stargate');
+  const { defaultRegistryTypes } = await import('@cosmjs/stargate');
+  const { Registry, makeSignDoc } = await import('@cosmjs/proto-signing');
   const { TxRaw } = await import('cosmjs-types/cosmos/tx/v1beta1/tx');
   const { fromBase64 } = await import('@cosmjs/encoding');
   const { SignMode } = await import('cosmjs-types/cosmos/tx/signing/v1beta1/signing');

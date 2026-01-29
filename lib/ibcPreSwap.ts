@@ -135,7 +135,6 @@ export async function executePreSwapOnOsmosis(
       'https://rpc.osmosis.zone',
       offlineSigner
     );
-    );
     
     // Parse pool IDs (support multi-hop)
     const poolIds = route.poolId.split(',');
@@ -275,7 +274,7 @@ export async function executeReverseTransferWithPreSwap(
       'https://rpc.osmosis.zone',
       offlineSigner
     );
-    );
+
     
     const transferResult = await client.sendIbcTokens(
       senderAddress,

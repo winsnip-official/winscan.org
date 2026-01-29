@@ -1,6 +1,6 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
-import { SigningStargateClient, defaultRegistryTypes, Registry } from '@cosmjs/stargate';
-import { EncodeObject } from '@cosmjs/proto-signing';
+import { SigningStargateClient, defaultRegistryTypes } from '@cosmjs/stargate';
+import { Registry, EncodeObject } from '@cosmjs/proto-signing';
 import { coins, StdFee, GasPrice } from '@cosmjs/stargate';
 
 // Swap contract address (from transaction analysis)

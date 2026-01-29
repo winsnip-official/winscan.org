@@ -1,7 +1,8 @@
 // Paxi Swap Module Registry
 // Creates a custom registry that recognizes Paxi's native swap module messages
 
-import { Registry, GeneratedType, defaultRegistryTypes } from '@cosmjs/stargate';
+import { Registry, GeneratedType } from '@cosmjs/proto-signing';
+import { defaultRegistryTypes } from '@cosmjs/stargate';
 
 // Paxi swap message types (based on proto/x/swap/types/tx.proto)
 export interface MsgSwap {
