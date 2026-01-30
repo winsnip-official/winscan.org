@@ -11,6 +11,7 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
   const [amount, setAmount] = useState<string>('1000');
   const [apr, setApr] = useState<string>('15');
   const [loadingApr, setLoadingApr] = useState<boolean>(false);
+  const [aprAutoDetected, setAprAutoDetected] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(365); // days
   const [compound, setCompound] = useState<boolean>(true);
   const [compoundFrequency, setCompoundFrequency] = useState<number>(1); // daily
@@ -21,16 +22,23 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
 
     const fetchApr = async () => {
       setLoadingApr(true);
+      setAprAutoDetected(false);
       try {
         const chainPath = selectedChain.chain_name.toLowerCase().replace(/\s+/g, '-');
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ssl.winsnip.xyz';
-        const response = await fetch(`${API_URL}/api/mint?chain=${chainPath}`);
+        const response = await fetch(`/api/mint?chain=${chainPath}`);
+        
+        console.log('[Staking Calculator] Fetching APR for:', chainPath);
+        console.log('[Staking Calculator] Response status:', response.status);
         
         if (response.ok) {
           const data = await response.json();
-          if (data.inflation) {
+          console.log('[Staking Calculator] Mint data:', data);
+          
+          if (data.inflation && data.inflation !== '0') {
             // Parse inflation value
             let aprValue = parseFloat(data.inflation);
+            
+            console.log('[Staking Calculator] Parsed inflation:', aprValue);
             
             // If inflation is already a percentage (> 1), use as is
             // If inflation is a decimal (< 1), convert to percentage
@@ -38,12 +46,18 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
               if (aprValue < 1) {
                 aprValue = aprValue * 100;
               }
+              console.log('[Staking Calculator] Final APR:', aprValue);
               setApr(aprValue.toFixed(2));
+              setAprAutoDetected(true);
             }
+          } else {
+            console.log('[Staking Calculator] No inflation data or inflation is 0, keeping default');
           }
+        } else {
+          console.log('[Staking Calculator] API request failed:', response.status);
         }
       } catch (error) {
-        console.error('Error fetching APR:', error);
+        console.error('[Staking Calculator] Error fetching APR:', error);
         // Keep default value if fetch fails
       } finally {
         setLoadingApr(false);
@@ -155,15 +169,18 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
                 {loadingApr && (
                   <span className="ml-2 text-xs text-blue-400">Loading...</span>
                 )}
-                {!loadingApr && selectedChain && (
-                  <span className="ml-2 text-xs text-green-400">Auto-detected</span>
+                {!loadingApr && aprAutoDetected && (
+                  <span className="ml-2 text-xs text-green-400">✓ Auto-detected</span>
                 )}
               </label>
               <div className="relative">
                 <input
                   type="number"
                   value={apr}
-                  onChange={(e) => setApr(e.target.value)}
+                  onChange={(e) => {
+                    setApr(e.target.value);
+                    setAprAutoDetected(false); // Mark as manually edited
+                  }}
                   className="w-full bg-[#0f0f0f] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
                   placeholder="Enter APR"
                   min="0"
@@ -176,7 +193,9 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                APR is automatically fetched from network data. You can adjust it manually.
+                {aprAutoDetected 
+                  ? 'APR automatically fetched from network. You can adjust it manually.'
+                  : 'Enter APR manually or switch chains to auto-detect.'}
               </p>
             </div>
 
