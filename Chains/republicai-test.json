@@ -2,11 +2,11 @@
   "chain_name": "republicai-test",
   "chain_id": "raitestnet_77701-1",
   "evm_chain_id": 77701,
-  "pretty_name": "Republic AI",
+  "pretty_name": "Republic AI Testnet",
   "network_type": "testnet",
   "status": "live",
-  "bech32_prefix": "republic",
-  "addr_prefix": "republic",
+  "bech32_prefix": "rai",
+  "addr_prefix": "rai",
   "slip44": 60,
   "sdk_version": "0.47.0",
   "coin_type": "60",
@@ -14,10 +14,10 @@
     "fee_tokens": [
       {
         "denom": "arai",
-        "fixed_min_gas_price": 10000000000,
-        "low_gas_price": 10000000000,
-        "average_gas_price": 25000000000,
-        "high_gas_price": 40000000000
+        "fixed_min_gas_price": 250000000,
+        "low_gas_price": 250000000,
+        "average_gas_price": 500000000,
+        "high_gas_price": 1000000000
       }
     ]
   },
@@ -30,8 +30,8 @@
   },
   "codebase": {
     "git_repo": "https://github.com/RepublicAI/republic",
-    "recommended_version": "v1.0.0",
-    "compatible_versions": ["v1.0.0"],
+    "recommended_version": "v0.1.0",
+    "compatible_versions": ["v0.1.0"],
     "cosmos_sdk_version": "0.47.0",
     "consensus": {
       "type": "cometbft",
@@ -40,11 +40,7 @@
   },
   "api": [
     {
-      "address": "https://api-republic.onenov.xyz",
-      "provider": "OneNov"
-    },
-    {
-      "address": "https://rpc.republicai.io",
+      "address": "https://rest.republicai.io",
       "provider": "Republic AI Official"
     }
   ],
@@ -56,14 +52,37 @@
   ],
   "rpc": [
     {
-      "address": "https://rpc-republic.onenov.xyz",
-      "provider": "OneNov",
-      "tx_index": "on"
-    },
-    {
       "address": "https://rpc.republicai.io",
       "provider": "Republic AI Official",
       "tx_index": "on"
+    },
+    {
+      "address": "https://statesync.republicai.io",
+      "provider": "Republic AI StateSync",
+      "tx_index": "on"
+    }
+  ],
+  "evm_rpc": [
+    {
+      "address": "https://evm-rpc.republicai.io",
+      "provider": "Republic AI Official"
+    }
+  ],
+  "peers": [
+    {
+      "id": "e281dc6e4ebf5e32fb7e6c4a111c06f02a1d4d62",
+      "address": "3.92.139.74:26656",
+      "provider": "Republic AI"
+    },
+    {
+      "id": "cfb2cb90a241f7e1c076a43954f0ee6d42794d04",
+      "address": "54.173.6.183:26656",
+      "provider": "Republic AI"
+    },
+    {
+      "id": "dc254b98cebd6383ed8cf2e766557e3d240100a9",
+      "address": "54.227.57.160:26656",
+      "provider": "Republic AI"
     }
   ],
   "assets": [
@@ -78,5 +97,8 @@
   "theme_color": "#1a1a2e",
   "logo": "https://pbs.twimg.com/profile_images/1973508413666574337/lfLtj2x-_400x400.jpg",
   "startBlock": 1,
-  "updated": "2026-01-30"
+  "explorer": "https://rest.republicai.io/swagger/",
+  "github": "https://github.com/RepublicAI/networks",
+  "discord": "https://discord.com/invite/therepublic",
+  "updated": "2026-01-31"
 }
