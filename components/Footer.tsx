@@ -61,23 +61,6 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4 text-sm">Community</h3>
             <div className="space-y-3">
               <a
-                href="https://t.me/winsnip"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-gray-500 hover:text-white transition-all group"
-              >
-                <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center border border-gray-800 group-hover:border-gray-700 group-hover:bg-gray-800 transition-all">
-                  <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.223-.548.223l.188-2.85 5.18-4.68c.223-.198-.054-.308-.346-.11l-6.4 4.03-2.76-.918c-.6-.187-.612-.6.125-.89l10.782-4.156c.5-.18.943.112.78.89z"/>
-                  </svg>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-white">Telegram</div>
-                  <div className="text-xs text-gray-600">Join our community</div>
-                </div>
-              </a>
-              
-              <a
                 href="https://twitter.com/winsnip"
                 target="_blank"
                 rel="noopener noreferrer"
