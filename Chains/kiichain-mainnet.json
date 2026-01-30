@@ -1,29 +1,25 @@
 {
   "chain_name": "kiichain-mainnet",
-  "chain_id": "kiichain-1",
+  "chain_id": "kiichain_1783-1",
   "pretty_name": "KiiChain",
-  "status": "live",
   "network_type": "mainnet",
   "bech32_prefix": "kii",
-  "daemon_name": "kiichaind",
-  "node_home": "$HOME/.kiichain",
-  "key_algos": ["secp256k1"],
-  "slip44": 118,
+  "slip44": 60,
   "fees": {
     "fee_tokens": [
       {
-        "denom": "ukii",
-        "fixed_min_gas_price": 0.025,
-        "low_gas_price": 0.025,
-        "average_gas_price": 0.03,
-        "high_gas_price": 0.04
+        "denom": "akii",
+        "fixed_min_gas_price": 600000000,
+        "low_gas_price": 600000000,
+        "average_gas_price": 750000000,
+        "high_gas_price": 1000000000
       }
     ]
   },
   "staking": {
     "staking_tokens": [
       {
-        "denom": "ukii"
+        "denom": "akii"
       }
     ]
   },
@@ -31,64 +27,84 @@
     "git_repo": "https://github.com/KiiChain/kiichain",
     "recommended_version": "v1.0.0",
     "compatible_versions": ["v1.0.0"],
-    "cosmos_sdk_version": "0.47",
+    "cosmos_sdk_version": "0.53",
     "consensus": {
       "type": "cometbft",
-      "version": "0.37"
-    },
-    "ibc_go_version": "7.3.0",
-    "genesis": {
-      "genesis_url": "https://raw.githubusercontent.com/KiiChain/networks/main/mainnet/genesis.json"
+      "version": "v0.38.0"
     }
   },
-  "logo": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kiichain/images/kii.png",
-  "description": "KiiChain - The first onchain FX layer for stablecoins and RWA",
-  "apis": {
-    "rpc": [
-      {
-        "address": "https://rpc.kiichain.io",
-        "provider": "KiiChain"
-      }
-    ],
-    "rest": [
-      {
-        "address": "https://api.kiichain.io",
-        "provider": "KiiChain"
-      }
-    ],
-    "grpc": [
-      {
-        "address": "grpc.kiichain.io:443",
-        "provider": "KiiChain"
-      }
-    ]
-  },
-  "explorers": [
+  "rpc": [
     {
-      "kind": "WinScan",
-      "url": "https://kiichain.winscan.org",
-      "tx_page": "https://kiichain.winscan.org/transactions/${txHash}"
+      "address": "https://rpc.kiivalidator.com",
+      "provider": "Kiichain"
+    },
+    {
+      "address": "https://rpc-kiichain.winnode.xyz",
+      "provider": "WinNode"
     }
   ],
+  "rpc_wss": [
+    {
+      "address": "wss://ws.kiivalidator.com/websocket",
+      "provider": "Kiichain"
+    },
+    {
+      "address": "wss://ws-kiichain.winnode.xyz/websocket",
+      "provider": "WinNode"
+    }
+  ],
+  "api": [
+    {
+      "address": "https://lcd.kiivalidator.com",
+      "provider": "Kiichain"
+    }
+  ],
+  "grpc": [
+    {
+      "address": "grpc.kiivalidator.com",
+      "provider": "Kiichain"
+    }
+  ],
+  "evm_rpc": [
+    {
+      "address": "https://json-rpc.kiivalidator.com",
+      "provider": "Kiichain"
+    }
+  ],
+  "evm_wss": [
+    {
+      "address": "wss://ws-evm-kiichain.winnode.xyz",
+      "provider": "WinNode"
+    },
+    {
+      "address": "wss://ws-evm.kiivalidator.com",
+      "provider": "Kiichain"
+    }
+  ],
+  "sdk_version": "0.53",
+  "coin_type": "60",
+  "min_tx_fee": "600000000",
+  "addr_prefix": "kii",
   "assets": [
     {
-      "description": "The native token of KiiChain",
-      "denom_units": [
-        {
-          "denom": "ukii",
-          "exponent": 0
-        },
-        {
-          "denom": "kii",
-          "exponent": 6
-        }
-      ],
-      "base": "ukii",
-      "name": "KiiChain",
-      "display": "kii",
+      "base": "akii",
       "symbol": "KII",
-      "logo": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kiichain/images/kii.png",
-      "coingecko_id": ""
+      "display": "KII",
+      "exponent": "18",
+      "coingecko_id": "kiichain",
+      "logo": "https://pbs.twimg.com/profile_images/1800553180083666944/zZe128CW_400x400.jpg"
     }
-  ]
+  ],
+  "theme_color": "#00D4FF",
+  "logo": "https://pbs.twimg.com/profile_images/1800553180083666944/zZe128CW_400x400.jpg",
+  "explorers": [
+    {
+      "name": "KiiChain Explorer",
+      "url": "https://explorer.kiichain.io",
+      "account_page": "https://explorer.kiichain.io/address/${accountAddress}"
+    }
+  ],
+  "keywords": ["RWA", "stablecoins", "EVM"],
+  "features": ["evm", "cosmwasm"],
+  "updated": "2026-01-30"
 }
