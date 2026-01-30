@@ -86,6 +86,12 @@ git push origin main
 # Backend auto-loads on restart (or wait for auto-reload)
 ```
 
+**⚠️ Important Timeline:**
+- **Immediate (0-5 min):** Chain appears in chain list after Vercel deploy ✅
+- **Delayed (1-2 hours):** Blockchain data available after backend sync ⏳
+- **What works immediately:** Chain selector, chain page layout, navigation
+- **What needs backend sync:** Blocks, transactions, validators, balances, all blockchain data
+
 **Note:** The frontend reads chain list from its own local `Chains/` folder via `/api/chains` route. The SSL backend is only used for blockchain data (blocks, transactions, validators). This means:
 - ✅ New chains appear immediately after GitHub merge + Vercel deploy
 - ⚠️ Blockchain data won't load until backend is synced (if backend is separate)

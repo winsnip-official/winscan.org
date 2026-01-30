@@ -7,6 +7,11 @@ body:
     attributes:
       value: |
         Want to see your chain on WinScan? Fill out this form!
+        
+        **Note:** After your chain is added:
+        - ✅ Chain will appear in the chain list immediately after merge
+        - ⏳ Blockchain data (blocks, validators, etc.) may take 1-2 hours to sync
+        - 💡 You can also submit a PR directly with your chain config file in `Chains/` folder
 
   - type: input
     id: chain-name
