@@ -53,6 +53,7 @@ type TranslationKeys = {
   'menu.blocks': string;
   'menu.transactions': string;
   'menu.validators': string;
+  'menu.stakingCalculator': string;
   'menu.uptime': string;
   'menu.proposals': string;
   'menu.assets': string;
@@ -126,6 +127,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.blocks': 'Blocks',
     'menu.transactions': 'Transactions',
     'menu.validators': 'Validators',
+    'menu.stakingCalculator': 'Staking Calculator',
     'menu.uptime': 'Uptime',
     'menu.proposals': 'Proposals',
     'menu.assets': 'Assets',
@@ -198,6 +200,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.blocks': 'Blok',
     'menu.transactions': 'Transaksi',
     'menu.validators': 'Validator',
+    'menu.stakingCalculator': 'Kalkulator Staking',
     'menu.uptime': 'Waktu Aktif',
     'menu.proposals': 'Proposal',
     'menu.assets': 'Aset',
@@ -270,6 +273,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.blocks': '区块',
     'menu.transactions': '交易',
     'menu.validators': '验证者',
+    'menu.stakingCalculator': '质押计算器',
     'menu.uptime': '运行时间',
     'menu.proposals': '提案',
     'menu.assets': '资产',
@@ -342,6 +346,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.blocks': 'ブロック',
     'menu.transactions': '取引',
     'menu.validators': 'バリデーター',
+    'menu.stakingCalculator': 'ステーキング計算機',
     'menu.uptime': '稼働時間',
     'menu.proposals': '提案',
     'menu.assets': 'アセット',
@@ -414,6 +419,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.blocks': 'ब्लॉक',
     'menu.transactions': 'लेन-देन',
     'menu.validators': 'सत्यापनकर्ता',
+    'menu.stakingCalculator': 'स्टेकिंग कैलकुलेटर',
     'menu.uptime': 'अपटाइम',
     'menu.proposals': 'प्रस्ताव',
     'menu.assets': 'संपत्ति',
@@ -486,6 +492,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.blocks': 'Блоки',
     'menu.transactions': 'Транзакции',
     'menu.validators': 'Валидаторы',
+    'menu.stakingCalculator': 'Калькулятор стейкинга',
     'menu.uptime': 'Аптайм',
     'menu.proposals': 'Предложения',
     'menu.assets': 'Активы',
@@ -558,6 +565,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.blocks': 'Khối',
     'menu.transactions': 'Giao dịch',
     'menu.validators': 'Trình xác thực',
+    'menu.stakingCalculator': 'Máy tính Staking',
     'menu.uptime': 'Thời gian hoạt động',
     'menu.proposals': 'Đề xuất',
     'menu.assets': 'Tài sản',

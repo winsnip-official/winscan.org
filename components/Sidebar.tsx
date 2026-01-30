@@ -24,7 +24,8 @@ import {
   Zap,
   Send,
   Cloud,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Calculator
 } from 'lucide-react';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { ChainData } from '@/types/chain';
@@ -94,6 +95,7 @@ export default function Sidebar({ selectedChain }: SidebarProps) {
         icon: <Users className="w-5 h-5" />,
         subItems: [
           { name: 'Validators', translationKey: 'menu.validators', path: `${chainPath}/validators`, icon: <Users className="w-4 h-4" /> },
+          { name: 'Staking Calculator', translationKey: 'menu.stakingCalculator', path: `${chainPath}/staking-calculator`, icon: <Calculator className="w-4 h-4" /> },
           { name: 'Uptime', translationKey: 'menu.uptime', path: `${chainPath}/uptime`, icon: <Activity className="w-4 h-4" /> },
           { name: 'Proposals', translationKey: 'menu.proposals', path: `${chainPath}/proposals`, icon: <Vote className="w-4 h-4" /> },
         ]
