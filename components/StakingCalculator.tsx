@@ -167,15 +167,20 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
 
             {/* APR Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Annual Percentage Rate (APR)
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-gray-300">
+                  Annual Percentage Rate (APR)
+                </label>
                 {loadingApr && (
-                  <span className="ml-2 text-xs text-blue-400">Loading...</span>
+                  <span className="text-xs text-blue-400">Loading...</span>
                 )}
                 {!loadingApr && aprAutoDetected && (
-                  <span className="ml-2 text-xs text-green-400">✓ Auto-detected</span>
+                  <span className="text-xs text-green-400 flex items-center gap-1">
+                    <span>✓</span>
+                    <span>Auto-detected</span>
+                  </span>
                 )}
-              </label>
+              </div>
               <div className="relative">
                 <input
                   type="number"
@@ -197,8 +202,8 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
               </div>
               <p className="text-xs text-gray-500 mt-1">
                 {aprAutoDetected 
-                  ? 'APR automatically fetched from network. You can adjust it manually.'
-                  : 'Enter APR manually or switch chains to auto-detect.'}
+                  ? 'APR is based on network inflation. Actual APR may vary based on bonded ratio and validator commission.'
+                  : 'Enter estimated APR. Network inflation can be used as a baseline.'}
               </p>
             </div>
 
@@ -283,8 +288,8 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
               {inflation && (
                 <div className="mb-4 pb-4 border-b border-gray-700">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400 text-sm">Network Inflation</span>
-                    <span className="text-blue-400 font-medium">{inflation}%</span>
+                    <span className="text-gray-400 text-sm">Network Inflation Rate</span>
+                    <span className="text-blue-400 font-medium text-base">{inflation}%</span>
                   </div>
                 </div>
               )}
