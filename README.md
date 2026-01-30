@@ -131,6 +131,8 @@
 
 ### 🌍 User Experience
 
+- 🏠 **Homepage with Chain List** - Browse all supported chains with elegant UI
+- ⏳ **Elegant Loading Screen** - Professional animated loading with logo & particles
 - 🌐 **Multi-Language Support** - 7 languages (EN, ID, JP, KR, CN, ES, RU)
 - 💼 **Wallet Integration** - Keplr, Leap, Cosmostation
 - 🎨 **Modern Dark UI** - Sleek, responsive design
@@ -139,6 +141,7 @@
 - 🎯 **One-Click Copy** - Copy addresses, hashes, commands
 - 🔐 **Secure** - Server-side API with CORS handling
 - ⚡ **Fast Loading** - Optimized performance
+- 🎛️ **Configurable** - Enable/disable homepage, customize branding
 
 </td>
 </tr>
@@ -150,20 +153,26 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/winsnip-official/winscan.git
-cd winscan
+git clone https://github.com/winsnip-official/winscan.org.git
+cd winscan.org
 
 # Install dependencies
 npm install
 
 # Setup environment
 cp .env.example .env
+# Edit .env and configure:
+# - NEXT_PUBLIC_API_URL (your backend API)
+# - NEXT_PUBLIC_ENABLE_HOMEPAGE (1=enable, 0=disable)
+# - NEXT_PUBLIC_DEFAULT_CHAIN (default chain when homepage disabled)
 
 # Run development server
 npm run dev
 ```
 
 Visit **http://localhost:3000** to see the explorer in action.
+
+📚 **[Homepage & Branding Configuration Guide](HOMEPAGE-CONFIG.md)** - Learn how to customize homepage, loading screen, logo, and more!
 
 ### Available Scripts
 
@@ -185,6 +194,17 @@ npm run chain:list   # List all configured chains
 <tr>
 <td width="50%">
 
+### 🎨 Customization & Branding
+
+- **[Homepage & Branding Config](HOMEPAGE-CONFIG.md)** 🆕  
+  Configure homepage, loading screen, logo & favicon
+  
+- **[Chain Configuration Guide](CHAIN-GUIDELINES.md)**  
+  Add your blockchain to WinScan
+
+</td>
+<td width="50%">
+
 ### 🤖 Automation Services
 
 - **[IBC Relayer Service](ibc-relayer/README.md)** 🆕  
@@ -197,21 +217,15 @@ npm run chain:list   # List all configured chains
   Automated staking rewards compounding
 
 </td>
-<td width="50%">
+</tr>
+<tr>
+<td colspan="2">
 
-### 🛠️ Configuration & Tools
+### 🛠️ Contributing & Support
 
-- **[Chain Configuration Guide](CHAIN-GUIDELINES.md)**  
-  Add your blockchain to WinScan
-  
-- **[Contributing Guide](CONTRIBUTING.md)**  
-  How to contribute to the project
-  
-- **[Security Policy](SECURITY.md)**  
-  Report vulnerabilities responsibly
-  
-- **[License](LICENSE)**  
-  Usage terms and restrictions
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
+- **[Security Policy](SECURITY.md)** - Report vulnerabilities responsibly  
+- **[License](LICENSE)** - Usage terms and restrictions
 
 </td>
 </tr>
