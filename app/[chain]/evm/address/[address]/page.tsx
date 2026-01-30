@@ -64,7 +64,7 @@ export default function EVMAddressDetailPage() {
   useEffect(() => {
     const loadChains = async () => {
       try {
-        const response = await fetch('https://ssl.winsnip.xyz/api/chains');
+        const response = await fetch('/api/chains');
         const data = await response.json();
         setChains(data);
         

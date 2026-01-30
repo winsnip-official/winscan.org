@@ -86,6 +86,34 @@ git push origin main
 # Backend auto-loads on restart (or wait for auto-reload)
 ```
 
+**Note:** The frontend reads chain list from its own local `Chains/` folder via `/api/chains` route. The SSL backend is only used for blockchain data (blocks, transactions, validators). This means:
+- ✅ New chains appear immediately after GitHub merge + Vercel deploy
+- ⚠️ Blockchain data won't load until backend is synced (if backend is separate)
+- 💡 Best practice: Deploy backend from same GitHub repo for auto-sync
+
+## Backend Architecture
+
+```
+Frontend Request Flow:
+
+1. Chain List:
+   User → Frontend → /api/chains → Reads local Chains/*.json → Returns chain list ✅
+
+2. Blockchain Data:
+   User → Frontend → SSL Load Balancer → ssl.winsnip.xyz (primary)
+                                       ↘ ssl2.winsnip.xyz (fallback)
+                                                ↓
+                                         Fetches from blockchain RPC/API
+```
+
+The SSL load balancer (`lib/sslLoadBalancer.ts`) provides:
+- Automatic failover between `ssl.winsnip.xyz` and `ssl2.winsnip.xyz`
+- Health checking every 30 seconds
+- Latency-based routing
+- No chain-specific configuration needed
+
+**Important:** If your backend is deployed separately from GitHub, you need to manually sync the `Chains/` folder to the backend server when adding new chains. Otherwise, the chain will appear in the list but blockchain data won't load.
+
 ## Common Issues
 
 ### Issue: "Chain not found" error
@@ -124,6 +152,52 @@ Before adding new chain:
 - [ ] `bech32_prefix` matches actual addresses
 - [ ] At least 2 RPC and 2 API endpoints for redundancy
 - [ ] Tested locally before pushing to production
+
+## Frequently Asked Questions
+
+### Q: Do I need to update `sslLoadBalancer.ts` when adding a new chain?
+**A:** NO! The SSL load balancer only manages failover between backend servers (`ssl.winsnip.xyz` and `ssl2.winsnip.xyz`). Chain configurations are automatically read from the `Chains/` folder by both frontend and backend. Just add your chain JSON file to `Chains/` and you're done.
+
+### Q: Will my chain appear on the frontend if I only update GitHub?
+**A:** YES! The frontend reads chain data from its own local `Chains/` folder, NOT from the SSL backend. When you:
+1. Add `Chains/yourchain.json` to GitHub
+2. Owner merges your PR
+3. Vercel auto-deploys → Frontend immediately has your chain ✅
+
+The SSL backend (`ssl.winsnip.xyz`) is only used for blockchain data (blocks, transactions, validators), NOT for chain list.
+
+### Q: What is the SSL backend used for then?
+**A:** The SSL backend provides blockchain data APIs:
+- `/api/blocks` - Block data
+- `/api/transactions` - Transaction data  
+- `/api/validators` - Validator data
+- `/api/balance` - Account balances
+- etc.
+
+But `/api/chains` is served by the **frontend itself** from the local `Chains/` folder.
+
+### Q: So users can add chains without owner updating the backend?
+**A:** YES! Architecture:
+```
+User PR → GitHub → Vercel Auto-Deploy → Frontend reads Chains/ folder → Chain appears ✅
+                                                                      ↓
+                                                    Blockchain data fetched from ssl.winsnip.xyz
+```
+
+### Q: How does the backend know about my new chain?
+**A:** The backend (`ssl.winsnip.xyz`) also reads from the `Chains/` folder. If the backend is deployed from the same GitHub repo, it will auto-update. If not, the owner needs to manually sync the `Chains/` folder to the backend server.
+
+### Q: What if the backend doesn't have my chain yet?
+**A:** The chain will still appear in the frontend chain list, but blockchain data (blocks, validators, etc.) won't load until the backend is updated. Users will see "Loading..." or error messages when trying to view chain details.
+
+### Q: Can users contribute new chains via GitHub?
+**A:** Yes! Users can:
+1. Fork the repository
+2. Add their chain JSON to `Chains/` folder
+3. Submit a Pull Request
+4. No code changes needed, just the chain config file
+5. Chain appears on frontend immediately after merge ✅
+6. Backend data works after owner syncs backend (if needed)
 
 ## Migration from Old Format
 
