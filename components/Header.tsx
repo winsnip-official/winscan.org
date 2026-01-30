@@ -159,7 +159,9 @@ function Header({ chains, selectedChain, onSelectChain }: HeaderProps) {
           {/* Center: Search Bar - Desktop only */}
           <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden lg:block mx-6">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              <div className="absolute left-3 top-0 bottom-0 flex items-center pointer-events-none">
+                <Search className="w-5 h-5 text-gray-400" />
+              </div>
               <input
                 type="text"
                 value={searchQuery}
@@ -191,8 +193,10 @@ function Header({ chains, selectedChain, onSelectChain }: HeaderProps) {
         <div className="px-3 py-2">
           {/* Search Bar */}
           <form onSubmit={handleSearch}>
-            <div className="relative flex items-center max-w-2xl mx-auto">
-              <Search className="absolute left-3 w-4 h-4 text-gray-400 pointer-events-none" />
+            <div className="relative max-w-2xl mx-auto">
+              <div className="absolute left-3 top-0 bottom-0 flex items-center pointer-events-none">
+                <Search className="w-4 h-4 text-gray-400" />
+              </div>
               <input
                 type="text"
                 value={searchQuery}
