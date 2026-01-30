@@ -9,7 +9,9 @@
     "lint": "next lint",
     "chain:add": "node scripts/add-chain.js",
     "chain:validate": "node scripts/validate-chains.js",
-    "chain:list": "node -e \"require('fs').readdirSync('Chains').filter(f=>f.endsWith('.json')&&!f.startsWith('_')).forEach(f=>console.log(f.replace('.json','')))\""
+    "chain:list": "node -e \"require('fs').readdirSync('Chains').filter(f=>f.endsWith('.json')&&!f.startsWith('_')).forEach(f=>console.log(f.replace('.json','')))\"",
+    "security:generate": "node scripts/generate-integrity.js",
+    "security:verify": "node scripts/verify-integrity.js"
   },
   "dependencies": {
     "@cosmjs/cosmwasm-stargate": "^0.38.1",

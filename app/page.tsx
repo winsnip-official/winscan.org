@@ -11,13 +11,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Check if homepage is enabled
-  const enableHomepage = process.env.NEXT_PUBLIC_ENABLE_HOMEPAGE === '1';
+  // Check if homepage is disabled (default: enabled)
+  const disableHomepage = process.env.NEXT_PUBLIC_DISABLE_HOMEPAGE === '1';
   const defaultChain = process.env.NEXT_PUBLIC_DEFAULT_CHAIN || 'paxi-mainnet';
 
   useEffect(() => {
     // If homepage disabled, redirect to default chain
-    if (!enableHomepage) {
+    if (disableHomepage) {
       router.replace(`/${defaultChain}`);
       return;
     }
@@ -33,7 +33,7 @@ export default function Home() {
         console.error('Error loading chains:', error);
         setLoading(false);
       });
-  }, [enableHomepage, defaultChain, router]);
+  }, [disableHomepage, defaultChain, router]);
 
   const filteredChains = chains.filter(chain => 
     chain.chain_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -44,13 +44,13 @@ export default function Home() {
   const testnets = filteredChains.filter(c => c.chain_name.includes('test'));
 
   // Show loading while checking config or loading chains
-  if (!enableHomepage || loading) {
+  if (disableHomepage || loading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-t-2 border-blue-500 border-solid rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-400">
-            {!enableHomepage ? 'Redirecting...' : 'Loading chains...'}
+            {disableHomepage ? 'Redirecting...' : 'Loading chains...'}
           </p>
         </div>
       </div>
