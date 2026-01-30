@@ -1,6 +1,5 @@
 import { createRoute } from '@/lib/routes';
 import { fetchJSONFromSSLBackend } from '@/lib/sslLoadBalancer';
-import { loadHoldersCache } from '../services/upaxiRealtimeService';
 
 export const GET = createRoute({
   requiredParams: ['chain', 'denom'],
@@ -11,7 +10,6 @@ export const GET = createRoute({
     const isPRC20 = denom.startsWith('paxi1') && denom.length > 40;
     
     if (isPRC20) {
-      // For PRC20 tokens, use dedicated prc20-holders endpoint
       let path = `/api/prc20-holders?contract=${encodeURIComponent(denom)}&limit=${limit}`;
       
       if (search) {
@@ -22,52 +20,28 @@ export const GET = createRoute({
       return await fetchJSONFromSSLBackend(path);
     }
 
-    // Special handling for UPAXI - use cache
+    // Special handling for UPAXI - fetch directly from backend
     if (denom === 'upaxi' && chain === 'paxi-mainnet') {
-      console.log('[Holders API] Using UPAXI holders cache');
+      console.log('[Holders API] Fetching UPAXI holders directly from backend');
       
       try {
-        const cache = await loadHoldersCache();
-        
-        if (search) {
-          // Search mode
-          const holder = cache.holders.find(h => h.address === search);
-          if (holder) {
-            return {
-              denom,
-              totalSupply: cache.totalSupply,
-              holders: [holder],
-              count: 1,
-              lastUpdate: cache.lastUpdate,
-              from_cache: true
-            };
-          }
-          return {
-            denom,
-            totalSupply: cache.totalSupply,
-            holders: [],
-            count: 0,
-            message: 'Address not found'
-          };
-        }
-        
-        // List mode
-        const limitNum = parseInt(limit);
-        const topHolders = cache.holders.slice(0, limitNum);
+        // Fetch directly from backend SSL
+        const path = `/api/holders?chain=paxi-mainnet&denom=upaxi&limit=${limit}${search ? `&search=${encodeURIComponent(search)}` : ''}`;
+        const data = await fetchJSONFromSSLBackend(path);
         
         return {
-          denom,
-          totalSupply: cache.totalSupply,
-          holders: topHolders,
-          count: cache.holders.length,
-          returnedCount: topHolders.length,
-          lastUpdate: cache.lastUpdate,
-          note: `Data from cache (${cache.holders.length} total holders). Last updated: ${new Date(cache.lastUpdate).toISOString()}`,
-          from_cache: true
+          ...data,
+          note: data.note || 'UPAXI holders data from backend cache'
         };
       } catch (error: any) {
-        console.error('[Holders API] Error loading cache:', error.message);
-        // Fallback to regular method
+        console.error('[Holders API] Error fetching UPAXI:', error.message);
+        return {
+          denom,
+          totalSupply: '0',
+          holders: [],
+          count: 0,
+          message: 'Failed to fetch UPAXI holders'
+        };
       }
     }
 
