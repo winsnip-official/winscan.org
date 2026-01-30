@@ -1,6 +1,6 @@
 /**
  * File integrity hashes - DO NOT MODIFY
- * Generated: 2026-01-30T22:26:25.764Z
+ * Generated: 2026-01-30T22:29:45.957Z
  */
 
 export const FILE_HASHES = {
@@ -13,4 +13,4 @@ export const FILE_HASHES = {
   "lib/apiClient.ts": "cc0477931dfe08c2b4852c50d182bb5a633d60b9a81eb1881c5a80e8e62113c3"
 } as const;
 
-export const GENERATED_AT = '2026-01-30T22:26:25.764Z';
+export const GENERATED_AT = '2026-01-30T22:29:45.957Z';
