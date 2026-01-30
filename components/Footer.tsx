@@ -1,8 +1,8 @@
 export default function Footer() {
   return (
-    <footer className="relative border-t border-gray-800 bg-black mt-auto overflow-hidden">
+    <footer className="relative border-t border-gray-800 bg-[#0a0a0a] mt-auto overflow-hidden">
       {/* Subtle background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/10 to-gray-900/20 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/5 to-gray-900/10 pointer-events-none"></div>
       
       <div className="relative max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
