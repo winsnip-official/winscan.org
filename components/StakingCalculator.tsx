@@ -10,6 +10,7 @@ interface StakingCalculatorProps {
 export default function StakingCalculator({ selectedChain }: StakingCalculatorProps) {
   const [amount, setAmount] = useState<string>('1000');
   const [apr, setApr] = useState<string>('15');
+  const [inflation, setInflation] = useState<string>('');
   const [loadingApr, setLoadingApr] = useState<boolean>(false);
   const [aprAutoDetected, setAprAutoDetected] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(365); // days
@@ -23,6 +24,7 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
     const fetchApr = async () => {
       setLoadingApr(true);
       setAprAutoDetected(false);
+      setInflation('');
       try {
         const chainPath = selectedChain.chain_name.toLowerCase().replace(/\s+/g, '-');
         const response = await fetch(`/api/mint?chain=${chainPath}`);
@@ -48,6 +50,7 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
               }
               console.log('[Staking Calculator] Final APR:', aprValue);
               setApr(aprValue.toFixed(2));
+              setInflation(aprValue.toFixed(2));
               setAprAutoDetected(true);
             }
           } else {
@@ -276,6 +279,15 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
                 <TrendingUp className="w-5 h-5 text-green-500" />
                 <h3 className="text-lg font-semibold text-white">Estimated Rewards</h3>
               </div>
+
+              {inflation && (
+                <div className="mb-4 pb-4 border-b border-gray-700">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Network Inflation</span>
+                    <span className="text-blue-400 font-medium">{inflation}%</span>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
