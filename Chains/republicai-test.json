@@ -29,7 +29,7 @@
     ]
   },
   "codebase": {
-    "git_repo": "https://github.com/republicai/republic",
+    "git_repo": "https://github.com/RepublicAI/republic",
     "recommended_version": "v1.0.0",
     "compatible_versions": ["v1.0.0"],
     "cosmos_sdk_version": "0.47.0",
@@ -40,31 +40,28 @@
   },
   "api": [
     {
-      "address": "https://rpc.republicai.io:1317",
-      "provider": "Republic AI Official"
-    }
-  ],
-  "evm_rpc": [
+      "address": "https://api-republic.onenov.xyz",
+      "provider": "OneNov"
+    },
     {
-      "address": "https://rpc.republicai.io:8545",
-      "provider": "Republic AI Official"
-    }
-  ],
-  "evm_wss": [
-    {
-      "address": "wss://rpc.republicai.io:8546",
+      "address": "https://rpc.republicai.io",
       "provider": "Republic AI Official"
     }
   ],
   "grpc": [
     {
-      "address": "rpc.republicai.io:9090",
+      "address": "grpc.republicai.io:443",
       "provider": "Republic AI Official"
     }
   ],
   "rpc": [
     {
-      "address": "https://rpc.republicai.io:26657",
+      "address": "https://rpc-republic.onenov.xyz",
+      "provider": "OneNov",
+      "tx_index": "on"
+    },
+    {
+      "address": "https://rpc.republicai.io",
       "provider": "Republic AI Official",
       "tx_index": "on"
     }
@@ -75,11 +72,11 @@
       "symbol": "RAI",
       "exponent": "18",
       "coingecko_id": "republic-ai",
-      "logo": "https://file.winsnip.xyz/file/uploads/arai.png"
+      "logo": "https://pbs.twimg.com/profile_images/1973508413666574337/lfLtj2x-_400x400.jpg"
     }
   ],
   "theme_color": "#1a1a2e",
-  "logo": "https://file.winsnip.xyz/file/uploads/arai.png",
+  "logo": "https://pbs.twimg.com/profile_images/1973508413666574337/lfLtj2x-_400x400.jpg",
   "startBlock": 1,
-  "updated": "2025-12-07"
+  "updated": "2026-01-30"
 }
