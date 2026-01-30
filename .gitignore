@@ -33,25 +33,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# backend (not included in this repo)
-/backend-api
-
-# personal documentation (not for public)
-SYNC-SETUP.md
-
-# VS Code workspace files (local configuration)
-*.code-workspace
-
-# Bot distribution and logs (built files)
-autocompound-bot/dist
-autocompound-bot/logs
-autocompound-bot/node_modules
-autocompound-bot/.env
-
-# Telegram monitor bot (not for public)
-telegram-monitor-bot
-prc20-dapp
-Discord-monitor
-ecosystem.config.js
-paxi-pump-fun
