@@ -30,3 +30,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .integrity-manifest.json
+
+# Private security notes (do not upload)
+SECURITY-NOTES.md

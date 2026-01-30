@@ -48,13 +48,29 @@ function generateManifest() {
     }
   }
 
-  // Save manifest
+  // Save manifest (local only)
   const manifestPath = path.join(process.cwd(), '.integrity-manifest.json');
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
+  // Generate hashes.ts (will be committed to repo)
+  const hashesContent = `/**
+ * File integrity hashes - DO NOT MODIFY
+ * Generated: ${manifest.generated}
+ */
+
+export const FILE_HASHES = ${JSON.stringify(manifest.files, null, 2)} as const;
+
+export const GENERATED_AT = '${manifest.generated}';
+`;
+
+  const hashesPath = path.join(process.cwd(), 'lib/security/hashes.ts');
+  fs.writeFileSync(hashesPath, hashesContent);
+
   console.log(`\n✅ Integrity manifest saved to .integrity-manifest.json`);
+  console.log(`✅ Hashes embedded in lib/security/hashes.ts`);
   console.log(`📅 Generated: ${manifest.generated}`);
   console.log(`📁 Protected files: ${Object.keys(manifest.files).length}`);
+  console.log(`\n⚠️  Remember to commit lib/security/hashes.ts!`);
 }
 
 // Run
