@@ -10,7 +10,6 @@ interface StakingCalculatorProps {
 export default function StakingCalculator({ selectedChain }: StakingCalculatorProps) {
   const [amount, setAmount] = useState<string>('1000');
   const [apr, setApr] = useState<string>('15');
-  const [inflation, setInflation] = useState<string>('');
   const [loadingApr, setLoadingApr] = useState<boolean>(false);
   const [aprAutoDetected, setAprAutoDetected] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(365); // days
@@ -24,40 +23,67 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
     const fetchApr = async () => {
       setLoadingApr(true);
       setAprAutoDetected(false);
-      setInflation('');
       try {
         const chainPath = selectedChain.chain_name.toLowerCase().replace(/\s+/g, '-');
-        const response = await fetch(`/api/mint?chain=${chainPath}`);
+        
+        // Fetch inflation
+        const mintResponse = await fetch(`/api/mint?chain=${chainPath}`);
         
         console.log('[Staking Calculator] Fetching APR for:', chainPath);
-        console.log('[Staking Calculator] Response status:', response.status);
+        console.log('[Staking Calculator] Mint response status:', mintResponse.status);
         
-        if (response.ok) {
-          const data = await response.json();
-          console.log('[Staking Calculator] Mint data:', data);
+        if (mintResponse.ok) {
+          const mintData = await mintResponse.json();
+          console.log('[Staking Calculator] Mint data:', mintData);
           
-          if (data.inflation && data.inflation !== '0') {
-            // Parse inflation value
-            let aprValue = parseFloat(data.inflation);
+          if (mintData.inflation && mintData.inflation !== '0') {
+            let inflationValue = parseFloat(mintData.inflation);
             
-            console.log('[Staking Calculator] Parsed inflation:', aprValue);
-            
-            // If inflation is already a percentage (> 1), use as is
-            // If inflation is a decimal (< 1), convert to percentage
-            if (!isNaN(aprValue)) {
-              if (aprValue < 1) {
-                aprValue = aprValue * 100;
+            // Convert to percentage if needed
+            if (!isNaN(inflationValue)) {
+              if (inflationValue < 1) {
+                inflationValue = inflationValue * 100;
               }
-              console.log('[Staking Calculator] Final APR:', aprValue);
-              setApr(aprValue.toFixed(2));
-              setInflation(aprValue.toFixed(2));
+              
+              console.log('[Staking Calculator] Inflation:', inflationValue);
+              
+              // Now fetch staking pool to get bonded ratio for accurate APR
+              try {
+                const poolResponse = await fetch(`/api/network?chain=${chainPath}`);
+                if (poolResponse.ok) {
+                  const poolData = await poolResponse.json();
+                  console.log('[Staking Calculator] Pool data:', poolData);
+                  
+                  if (poolData.bondedTokens && poolData.supply) {
+                    const bondedTokens = parseFloat(poolData.bondedTokens);
+                    const totalSupply = parseFloat(poolData.supply);
+                    
+                    if (bondedTokens > 0 && totalSupply > 0) {
+                      const bondedRatio = bondedTokens / totalSupply;
+                      const calculatedApr = inflationValue / bondedRatio;
+                      
+                      console.log('[Staking Calculator] Bonded Ratio:', bondedRatio);
+                      console.log('[Staking Calculator] Calculated APR:', calculatedApr);
+                      
+                      setApr(calculatedApr.toFixed(2));
+                      setAprAutoDetected(true);
+                      return;
+                    }
+                  }
+                }
+              } catch (poolError) {
+                console.log('[Staking Calculator] Could not fetch pool data, using inflation as APR');
+              }
+              
+              // Fallback: use inflation as APR if bonded ratio not available
+              setApr(inflationValue.toFixed(2));
               setAprAutoDetected(true);
             }
           } else {
             console.log('[Staking Calculator] No inflation data or inflation is 0, keeping default');
           }
         } else {
-          console.log('[Staking Calculator] API request failed:', response.status);
+          console.log('[Staking Calculator] API request failed:', mintResponse.status);
         }
       } catch (error) {
         console.error('[Staking Calculator] Error fetching APR:', error);
@@ -284,15 +310,6 @@ export default function StakingCalculator({ selectedChain }: StakingCalculatorPr
                 <TrendingUp className="w-5 h-5 text-green-500" />
                 <h3 className="text-lg font-semibold text-white">Estimated Rewards</h3>
               </div>
-
-              {inflation && (
-                <div className="mb-4 pb-4 border-b border-gray-700">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400 text-sm">Network Inflation Rate</span>
-                    <span className="text-blue-400 font-medium text-base">{inflation}%</span>
-                  </div>
-                </div>
-              )}
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
