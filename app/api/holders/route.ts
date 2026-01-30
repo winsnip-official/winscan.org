@@ -1,6 +1,6 @@
 import { createRoute } from '@/lib/routes';
 import { fetchJSONFromSSLBackend } from '@/lib/sslLoadBalancer';
-import { loadHoldersCache } from '../services/upaxiHoldersUpdater';
+import { loadHoldersCache } from '../services/upaxiRealtimeService';
 
 export const GET = createRoute({
   requiredParams: ['chain', 'denom'],
