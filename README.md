@@ -470,15 +470,27 @@ npm start
 
 Create `.env` file:
 ```env
-NEXT_PUBLIC_API_URL=https://ssl.winsnip.xyz
+# Optional: Custom SSL Backend (for advanced users)
+# If you have your own backend API with SSL endpoints, configure them here
+# If not set, the app will automatically use RPC/API from chain config files
+API_URL=https://your-ssl-backend.com
+API_URL_FALLBACK=https://your-ssl-backend-2.com
+
+# Public API URL (for frontend)
+NEXT_PUBLIC_API_URL=https://your-api.com
 ```
+
+**Note for Public Users:**
+- You **don't need** to set `API_URL` or `API_URL_FALLBACK`
+- The explorer will automatically use RPC/API endpoints from chain configuration files in the `Chains/` folder
+- SSL backend is only needed if you're running your own custom indexer/backend
 
 ### Deployment
 
 **🚀 Vercel (Recommended)**
 
 1. Import repository to Vercel
-2. Add environment variables
+2. Add environment variables (optional - only if you have custom backend)
 3. Deploy automatically on push
 
 **🐳 Docker**

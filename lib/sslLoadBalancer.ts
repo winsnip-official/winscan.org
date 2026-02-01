@@ -217,16 +217,23 @@ class SSLLoadBalancer {
 
 /**
  * Simple SSL failover - try SSL1, if error try SSL2
+ * Only uses SSL backend if API_URL env var is set
+ * Otherwise returns null to allow fallback to chain RPC
  */
 export async function fetchWithFailover(
   path: string,
   options?: RequestInit
 ): Promise<Response> {
-  const endpoints = [
-    'https://ssl.winsnip.xyz',
-    'https://ssl2.winsnip.xyz'
-  ];
+  // Get SSL endpoints from environment variables
+  const ssl1 = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL_SSL1;
+  const ssl2 = process.env.API_URL_FALLBACK || process.env.NEXT_PUBLIC_API_URL_SSL2;
+  
+  // If no SSL backend configured, throw error to trigger RPC fallback
+  if (!ssl1 && !ssl2) {
+    throw new Error('No SSL backend configured - use chain RPC instead');
+  }
 
+  const endpoints = [ssl1, ssl2].filter(Boolean) as string[];
   let lastError: Error | null = null;
 
   for (let i = 0; i < endpoints.length; i++) {
