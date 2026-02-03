@@ -949,10 +949,19 @@ export default function ValidatorsTable({ validators, chainName, asset, chain }:
       
       if (stakeTab === 'withdraw') {
         const hasRewards = parseFloat(rewards) > 0;
-        const hasCommission = parseFloat(commission) > 0;
+        
+        // Commission can only be withdrawn by the validator operator
+        // The validator's operator address is in selectedValidator.address
+        // We need to convert it to account address format for comparison
+        const isValidatorOperator = account.address === selectedValidator.address;
+        const hasCommission = isValidatorOperator && parseFloat(commission) > 0;
         
         if (!hasRewards && !hasCommission) {
-          alert('No rewards or commission available to withdraw');
+          if (!isValidatorOperator && parseFloat(commission) > 0) {
+            alert('You can only withdraw your delegation rewards. Commission can only be withdrawn by the validator operator.');
+          } else {
+            alert('No rewards or commission available to withdraw');
+          }
           setIsProcessing(false);
           return;
         }
@@ -1409,6 +1418,11 @@ export default function ValidatorsTable({ validators, chainName, asset, chain }:
                     <div className="flex-1">
                       <div className="text-xs text-gray-400">Validator Commission</div>
                       <div className="text-green-400 font-medium">{commission} {asset?.symbol}</div>
+                      {account?.address !== selectedValidator?.address && (
+                        <div className="text-xs text-orange-400 mt-1">
+                          ⚠️ Only validator operator can withdraw commission
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
