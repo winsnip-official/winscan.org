@@ -1,6 +1,6 @@
 'use client';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import PrefetchLink from '@/components/PrefetchLink';
 import { 
   Home, 
   Box, 
@@ -316,10 +316,9 @@ export default function Sidebar({ selectedChain }: SidebarProps) {
                           const isSubActive = pathname === subItem.path || pathname.startsWith(subItem.path + '/');
                           const subDisplayName = t(subItem.translationKey);
                           return (
-                            <Link
+                            <PrefetchLink
                               key={subItem.path}
                               href={subItem.path}
-                              prefetch={true}
                               onClick={closeMobile}
                               className={`flex items-center pl-12 pr-4 py-2.5 transition-all duration-200 touch-manipulation select-none ${
                                 isSubActive
@@ -334,16 +333,15 @@ export default function Sidebar({ selectedChain }: SidebarProps) {
                               {isSubActive && (
                                 <div className="ml-auto w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
                               )}
-                            </Link>
+                            </PrefetchLink>
                           );
                         })}
                       </div>
                     )}
                   </>
                 ) : (
-                  <Link
+                  <PrefetchLink
                     href={item.path}
-                    prefetch={true}
                     onClick={closeMobile}
                     className={`flex items-center px-4 py-3 transition-all duration-200 touch-manipulation select-none ${
                       isActive
@@ -358,7 +356,7 @@ export default function Sidebar({ selectedChain }: SidebarProps) {
                     {!collapsed && isActive && (
                       <div className="ml-auto w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
                     )}
-                  </Link>
+                  </PrefetchLink>
                 )}
               </div>
             );
