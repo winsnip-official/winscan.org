@@ -77,7 +77,7 @@ export async function parallelFetch<T extends Record<string, any>>(
 
   const output = {} as T;
   results.forEach(({ key, data }) => {
-    output[key] = data;
+    output[key] = data as T[keyof T];
   });
 
   return output;

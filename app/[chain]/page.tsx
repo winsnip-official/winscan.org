@@ -20,6 +20,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { getTranslation } from '@/lib/i18n';
 import { prefetchOnIdle } from '@/lib/prefetch';
 import { fetchChainsWithCache } from '@/lib/chainsCache';
+import { parallelFetch, cachedFetch } from '@/lib/optimizedFetch';
+import { StatsSkeleton, TableSkeleton, ChartSkeleton } from '@/components/SkeletonLoader';
 
 export default function ChainOverviewPage() {
   const params = useParams();
@@ -154,311 +156,80 @@ export default function ChainOverviewPage() {
   useEffect(() => {
     if (selectedChain) {
       const chainIdentifier = (selectedChain.chain_id || selectedChain.chain_name).trim();
-      const chainKey = `chain_data_${selectedChain.chain_name}`;
-      const cacheTimeout = 30000;
-
-      let hasAnyCache = false;
       
-      try {
-        const cachedNetwork = sessionStorage.getItem(`${chainKey}_network`);
-        const cachedBlocks = sessionStorage.getItem(`${chainKey}_blocks`);
-        const cachedValidators = sessionStorage.getItem(`${chainKey}_validators`);
-        const cachedTransactions = sessionStorage.getItem(`${chainKey}_transactions`);
-        
-        if (cachedNetwork) {
-          const { data } = JSON.parse(cachedNetwork);
-          setStats({
-            chainId: data.chainId || selectedChain.chain_name,
-            latestBlock: data.latestBlockHeight || '0',
-            blockTime: '~6s',
-            peers: data.totalPeers || 0,
-          });
-          hasAnyCache = true;
-        }
-        if (cachedBlocks) {
-          const { data } = JSON.parse(cachedBlocks);
-          if (data && data.length > 0) {
-            setBlocks(data);
-            hasAnyCache = true;
-          }
-        }
-        if (cachedValidators) {
-          const { data } = JSON.parse(cachedValidators);
-          if (data && data.length > 0) {
-            setValidators(data);
-            // Calculate total bonded from cached validators
-            const totalBonded = data.reduce((sum: number, v: any) => 
-              sum + (parseFloat(v.votingPower) || 0), 0
-            ) / 1000000;
-            setTotalSupply(totalBonded > 0 ? totalBonded : 1000000);
-            hasAnyCache = true;
-          }
-        }
-        if (cachedTransactions) {
-          const { data } = JSON.parse(cachedTransactions);
-          if (data && data.length > 0) {
-            setTransactions(data);
-            hasAnyCache = true;
-          }
-        }
-      } catch (e) {
-        console.warn('Error loading cache:', e);
-      }
-      
-      setLoading(false);
-      
-      setDataLoaded({
-        network: false,
-        blocks: false,
-        validators: false,
-        transactions: false
-      });
-
-      const getCache = (key: string) => {
-        try {
-          const cached = sessionStorage.getItem(key);
-          if (!cached) return null;
-          const { data } = JSON.parse(cached);
-          return data;
-        } catch {
-          return null;
-        }
-      };
-
-      const setCache = (key: string, data: any) => {
-        try {
-          sessionStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
-        } catch (e) {}
-      };
-
-      const fetchWithRetry = async (url: string, retries = 2) => {
-        for (let i = 0; i <= retries; i++) {
-          try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
-            
-            const response = await fetchApi(url, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json();
-          } catch (err) {
-            if (i === retries) throw err;
-            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-          }
-        }
-      };
-
-      const loadNetwork = async () => {
-        try {
-          const chainIdentifier = (selectedChain.chain_id || selectedChain.chain_name).trim();
-          const data = await fetchWithRetry(`/api/network?chain=${chainIdentifier}`);
-          
-          // Fetch additional stats
-          let inflation = '~7%';
-          let apr = '~12%';
-          
-          try {
-            // Check localStorage cache (10 minutes) to avoid spamming failed endpoints
-            const mintCacheKey = `mint_${chainIdentifier}`;
-            const cachedMint = localStorage.getItem(mintCacheKey);
-            
-            if (cachedMint) {
-              try {
-                const { data, timestamp } = JSON.parse(cachedMint);
-                const age = Date.now() - timestamp;
-                
-                // Use cache if less than 10 minutes old
-                if (age < 10 * 60 * 1000) {
-                  if (data.inflation) inflation = data.inflation;
-                  if (data.apr) apr = data.apr;
-                } else {
-                  throw new Error('Cache expired');
-                }
-              } catch {
-                // Fetch inflation
-                const mintData = await fetchWithRetry(`/api/mint?chain=${chainIdentifier}`);
-                if (mintData && mintData.inflation) {
-                  inflation = (parseFloat(mintData.inflation) * 100).toFixed(2) + '%';
-                }
-                if (mintData && mintData.annualProvisions) {
-                  // Calculate APR based on inflation and bonded ratio
-                  const bondedRatio = validators.length > 0 ? 
-                    validators.reduce((sum: number, v: any) => sum + (parseFloat(v.votingPower) || 0), 0) / (totalSupply * 1000000) : 0.67;
-                  apr = ((parseFloat(mintData.inflation) / Math.max(bondedRatio, 0.01)) * 100).toFixed(2) + '%';
-                }
-                
-                // Save to cache
-                localStorage.setItem(mintCacheKey, JSON.stringify({
-                  data: { inflation, apr },
-                  timestamp: Date.now()
-                }));
-              }
-            } else {
-              // Fetch inflation
-              const mintData = await fetchWithRetry(`/api/mint?chain=${chainIdentifier}`);
-              if (mintData && mintData.inflation) {
-                inflation = (parseFloat(mintData.inflation) * 100).toFixed(2) + '%';
-              }
-              if (mintData && mintData.annualProvisions) {
-                // Calculate APR based on inflation and bonded ratio
-                const bondedRatio = validators.length > 0 ? 
-                  validators.reduce((sum: number, v: any) => sum + (parseFloat(v.votingPower) || 0), 0) / (totalSupply * 1000000) : 0.67;
-                apr = ((parseFloat(mintData.inflation) / Math.max(bondedRatio, 0.01)) * 100).toFixed(2) + '%';
-              }
-              
-              // Save to cache
-              localStorage.setItem(mintCacheKey, JSON.stringify({
-                data: { inflation, apr },
-                timestamp: Date.now()
-              }));
-            }
-          } catch (err) {
-            // Silent fail - keep default values
-          }
-          
-          setStats({
-            chainId: data.chainId || selectedChain.chain_name,
-            latestBlock: data.latestBlockHeight || '0',
-            blockTime: '~6s',
-            peers: data.totalPeers || 0,
-            inflation,
-            apr
-          });
-          setCache(`${chainKey}_network`, data);
-          setDataLoaded(prev => ({ ...prev, network: true }));
-        } catch (err) {
-          setDataLoaded(prev => ({ ...prev, network: true }));
-        }
-      };
-
-      const loadBlocks = async () => {
-        try {
-          const data = await fetchWithRetry(`/api/blocks?chain=${chainIdentifier}&limit=30`);
-          setBlocks(data);
-          setCache(`${chainKey}_blocks`, data);
-          setDataLoaded(prev => ({ ...prev, blocks: true }));
-        } catch (err) {
-          setDataLoaded(prev => ({ ...prev, blocks: true }));
-        }
-      };
-
-      const loadValidators = async () => {
-        try {
-          // Check localStorage cache (10 minutes)
-          const cacheKey = `validators_${chainIdentifier}`;
-          const cached = localStorage.getItem(cacheKey);
-          
-          if (cached) {
-            try {
-              const { data, timestamp } = JSON.parse(cached);
-              const age = Date.now() - timestamp;
-              
-              // Use cache if less than 10 minutes old
-              if (age < 10 * 60 * 1000) {
-                setValidators(data);
-                setCache(`${chainKey}_validators`, data);
-                setDataLoaded(prev => ({ ...prev, validators: true }));
-                return;
-              }
-            } catch {}
-          }
-          
-          const response = await fetchWithRetry(`/api/validators?chain=${chainIdentifier}`);
-          // API returns { validators: [...], total: number }
-          const validatorsData = response.validators || response;
-          
-          console.log('Validators loaded:', validatorsData.length, 'validators');
-          if (validatorsData.length > 0) {
-            console.log('First validator sample:', validatorsData[0]);
-          }
-          
-          setValidators(validatorsData);
-          setCache(`${chainKey}_validators`, validatorsData);
-          
-          // Save to localStorage cache
-          localStorage.setItem(cacheKey, JSON.stringify({
-            data: validatorsData,
-            timestamp: Date.now()
-          }));
-          
-          setDataLoaded(prev => ({ ...prev, validators: true }));
-        } catch (err) {
-          console.error('Error loading validators:', err);
-          setDataLoaded(prev => ({ ...prev, validators: true }));
-        }
-      };
-
-      const loadSupply = async () => {
-        try {
-          // Check localStorage cache (10 minutes)
-          const cacheKey = `supply_${chainIdentifier}`;
-          const cached = localStorage.getItem(cacheKey);
-          
-          if (cached) {
-            try {
-              const { data, timestamp } = JSON.parse(cached);
-              const age = Date.now() - timestamp;
-              
-              // Use cache if less than 10 minutes old
-              if (age < 10 * 60 * 1000) {
-                setTotalSupply(data);
-                return;
-              }
-            } catch {}
-          }
-          
-          // Ambil total supply dari API bank/supply
-          const supplyData = await fetchWithRetry(`/api/supply?chain=${chainIdentifier}`);
-          if (supplyData && supplyData.totalSupply) {
-            const supply = parseFloat(supplyData.totalSupply) / 1000000;
-            setTotalSupply(supply);
-            console.log('Total supply loaded:', supplyData.totalSupply);
-            
-            // Save to localStorage cache
-            localStorage.setItem(cacheKey, JSON.stringify({
-              data: supply,
-              timestamp: Date.now()
-            }));
-          }
-        } catch (err) {
-          console.error('Error loading supply:', err);
-          // Fallback ke 1M jika gagal
-          setTotalSupply(1000000);
-        }
-      };
-
-      const loadTransactions = async () => {
-        try {
-          const data = await fetchWithRetry(`/api/transactions?chain=${chainIdentifier}&limit=20`);
-          setTransactions(data);
-          setCache(`${chainKey}_transactions`, data);
-          setDataLoaded(prev => ({ ...prev, transactions: true }));
-        } catch (err) {
-          setDataLoaded(prev => ({ ...prev, transactions: true }));
-        }
-      };
-
+      // Load all data in parallel using optimized fetch
       (async () => {
-
-        const timeoutId = setTimeout(() => {
-          console.warn('Loading timeout reached, forcing loading = false');
-          setLoading(false);
-        }, 10000); // 10 second max loading time
+        setLoading(false); // Show skeleton immediately
         
         try {
-          await Promise.all([
-            loadNetwork(),
-            loadBlocks(),
-            loadValidators(),
-            loadSupply(),
-            loadTransactions(),
-          ]);
+          // Fetch all endpoints in parallel with aggressive caching
+          const data = await parallelFetch<{
+            network: any;
+            blocks: any[];
+            validators: any;
+            supply: any;
+            transactions: any[];
+          }>({
+            network: `/api/network?chain=${chainIdentifier}`,
+            blocks: `/api/blocks?chain=${chainIdentifier}&limit=30`,
+            validators: `/api/validators?chain=${chainIdentifier}`,
+            supply: `/api/supply?chain=${chainIdentifier}`,
+            transactions: `/api/transactions?chain=${chainIdentifier}&limit=20`,
+          }, { staleTime: 5 * 60 * 1000 }); // 5 minute cache
+
+          // Update state with fetched data
+          if (data.network) {
+            setStats({
+              chainId: data.network.chainId || selectedChain.chain_name,
+              latestBlock: data.network.latestBlockHeight || '0',
+              blockTime: '~6s',
+              peers: data.network.totalPeers || 0,
+              inflation: '~7%',
+              apr: '~12%'
+            });
+          }
+
+          if (data.blocks && data.blocks.length > 0) {
+            setBlocks(data.blocks);
+          }
+
+          if (data.validators) {
+            const validatorsData = data.validators.validators || data.validators;
+            setValidators(validatorsData);
+            
+            // Fetch mint data separately (may fail for some chains)
+            try {
+              const mintData = await cachedFetch<any>(
+                `/api/mint?chain=${chainIdentifier}`,
+                { staleTime: 10 * 60 * 1000 } // 10 minute cache
+              );
+              
+              if (mintData && mintData.inflation) {
+                const inflation = (parseFloat(mintData.inflation) * 100).toFixed(2) + '%';
+                const bondedRatio = validatorsData.length > 0 ? 
+                  validatorsData.reduce((sum: number, v: any) => sum + (parseFloat(v.votingPower) || 0), 0) / (totalSupply * 1000000) : 0.67;
+                const apr = ((parseFloat(mintData.inflation) / Math.max(bondedRatio, 0.01)) * 100).toFixed(2) + '%';
+                
+                setStats((prev: any) => ({ ...prev, inflation, apr }));
+              }
+            } catch (err) {
+              // Silent fail - keep default values
+            }
+          }
+
+          if (data.supply && data.supply.totalSupply) {
+            const supply = parseFloat(data.supply.totalSupply) / 1000000;
+            setTotalSupply(supply);
+          } else {
+            setTotalSupply(1000000);
+          }
+
+          if (data.transactions && data.transactions.length > 0) {
+            setTransactions(data.transactions);
+          }
+
         } catch (err) {
-          console.error('Error during data loading:', err);
-        } finally {
-          clearTimeout(timeoutId);
-          setLoading(false);
+          console.error('Error loading data:', err);
         }
       })();
     }
@@ -633,9 +404,32 @@ export default function ChainOverviewPage() {
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-            </div>
+            <>
+              {/* Stats Skeleton */}
+              <StatsSkeleton />
+              
+              {/* Charts Skeleton */}
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6 mb-6 mt-6">
+                <div className="lg:col-span-2">
+                  <ChartSkeleton />
+                </div>
+                <ChartSkeleton />
+                <ChartSkeleton />
+                <ChartSkeleton />
+              </div>
+              
+              {/* Tables Skeleton */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
+                <div>
+                  <div className="h-6 bg-gray-700 rounded w-32 mb-4"></div>
+                  <TableSkeleton rows={10} />
+                </div>
+                <div>
+                  <div className="h-6 bg-gray-700 rounded w-32 mb-4"></div>
+                  <TableSkeleton rows={10} />
+                </div>
+              </div>
+            </>
           ) : (
             <>
               {/* Stats Grid - 5 columns */}

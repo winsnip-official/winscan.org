@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -10,7 +14,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "downlevelIteration": true,
     "plugins": [
@@ -19,17 +23,49 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@/lib/api": ["./lib/api"],
-      "@/lib/routes": ["./lib/routes"],
-      "@/lib/blockchain": ["./lib/blockchain"],
-      "@/lib/cache": ["./lib/cache"],
-      "@/lib/errors": ["./lib/errors"],
-      "@/lib/utils": ["./lib/utils"],
-      "@/lib/i18n": ["./lib/i18n"],
-      "@/lib/types": ["./lib/types"]
-    }
+      "@/*": [
+        "./*"
+      ],
+      "@/lib/api": [
+        "./lib/api"
+      ],
+      "@/lib/routes": [
+        "./lib/routes"
+      ],
+      "@/lib/blockchain": [
+        "./lib/blockchain"
+      ],
+      "@/lib/cache": [
+        "./lib/cache"
+      ],
+      "@/lib/errors": [
+        "./lib/errors"
+      ],
+      "@/lib/utils": [
+        "./lib/utils"
+      ],
+      "@/lib/i18n": [
+        "./lib/i18n"
+      ],
+      "@/lib/types": [
+        "./lib/types"
+      ]
+    },
+    "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "autocompound-bot", "backend-api", "DATA-VPS-Baked", "prc20-dapp", "ibc-relayer"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "autocompound-bot",
+    "backend-api",
+    "DATA-VPS-Baked",
+    "prc20-dapp",
+    "ibc-relayer"
+  ]
 }
