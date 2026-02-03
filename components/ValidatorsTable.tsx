@@ -951,10 +951,29 @@ export default function ValidatorsTable({ validators, chainName, asset, chain }:
         const hasRewards = parseFloat(rewards) > 0;
         
         // Commission can only be withdrawn by the validator operator
-        // The validator's operator address is in selectedValidator.address
-        // We need to convert it to account address format for comparison
-        const isValidatorOperator = account.address === selectedValidator.address;
+        // Convert validator operator address to account address for comparison
+        const { convertValidatorToAccountAddress } = await import('../lib/addressConverter');
+        const validatorAccountAddress = convertValidatorToAccountAddress(selectedValidator.address);
+        
+        console.log('🔍 Address comparison for commission withdrawal:', {
+          connectedWallet: account.address,
+          validatorOperator: selectedValidator.address,
+          validatorAccountConverted: validatorAccountAddress,
+          isMatch: account.address === validatorAccountAddress,
+          commissionAmount: commission,
+          rewardsAmount: rewards
+        });
+        
+        const isValidatorOperator = account.address === validatorAccountAddress;
         const hasCommission = isValidatorOperator && parseFloat(commission) > 0;
+        
+        console.log('✅ Withdrawal decision:', {
+          isValidatorOperator,
+          hasRewards,
+          hasCommission,
+          willWithdrawRewards: hasRewards,
+          willWithdrawCommission: hasCommission
+        });
         
         if (!hasRewards && !hasCommission) {
           if (!isValidatorOperator && parseFloat(commission) > 0) {
@@ -965,6 +984,14 @@ export default function ValidatorsTable({ validators, chainName, asset, chain }:
           setIsProcessing(false);
           return;
         }
+        
+        console.log('💰 Withdrawal params:', {
+          hasRewards,
+          hasCommission,
+          isValidatorOperator,
+          rewardsAmount: rewards,
+          commissionAmount: commission
+        });
         
         const { executeWithdrawAll } = await import('../lib/keplr');
         const withdrawParams = {
