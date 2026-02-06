@@ -1,5 +1,5 @@
 import { createRoute } from '@/lib/routes/factory';
-import { fetchJSONWithFailover } from '@/lib/sslLoadBalancer';
+import { fetchJSONWithSmartFailover } from '@/lib/sslLoadBalancer';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -13,15 +13,15 @@ export const GET = createRoute({
   handler: async ({ chain }) => {
     try {
       const path = `/api/network?chain=${chain}`;
-      console.log('[Network API] Fetching with failover:', path);
+      console.log('[Network API] Fetching with smart failover:', path);
       
-      // Use failover: SSL1 -> SSL2
-      return await fetchJSONWithFailover(path, {
+      // Use smart failover: Chain RPC -> SSL1 -> SSL2
+      return await fetchJSONWithSmartFailover(path, chain, {
         headers: { 'Accept': 'application/json' },
         signal: AbortSignal.timeout(8000) // 8 second timeout for Vercel
       });
     } catch (error) {
-      console.warn(`[Network API] Failed for chain ${chain}:`, error);
+      console.warn(`[Network API] All endpoints failed for chain ${chain}:`, error);
       // Return default network data instead of throwing error
       return {
         bondedTokens: '0',
