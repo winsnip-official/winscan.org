@@ -1,0 +1,33 @@
+{
+  "env": {
+    "API_URL": "https://ssl.winsnip.xyz",
+    "API_URL_FALLBACK": "https://ssl2.winsnip.xyz",
+    "NEXT_PUBLIC_API_URL": "https://ssl.winsnip.xyz",
+    "NEXT_PUBLIC_API_URL_FALLBACK": "https://ssl2.winsnip.xyz",
+    "NEXT_PUBLIC_BACKEND_URL": "https://ssl.winsnip.xyz",
+    "NEXT_PUBLIC_WINSCAN_URL": "https://winscan.winsnip.xyz",
+    "NEXT_PUBLIC_API_TIMEOUT": "8000",
+    "NEXT_PUBLIC_CACHE_TTL": "30000",
+    "NEXT_PUBLIC_POLL_VALIDATOR_DETAIL": "30000",
+    "NEXT_PUBLIC_POLL_VALIDATORS": "30000",
+    "NEXT_PUBLIC_POLL_OVERVIEW": "20000",
+    "NEXT_PUBLIC_POLL_BLOCKS": "15000",
+    "NEXT_PUBLIC_POLL_TRANSACTIONS": "15000",
+    "NEXT_PUBLIC_POLL_UPTIME": "30000",
+    "NEXT_PUBLIC_DEFAULT_CHAIN": "paxi-mainnet",
+    "NEXT_PUBLIC_ALLOWED_DOMAINS": ""
+  },
+  "build": {
+    "env": {
+      "API_URL": "https://ssl.winsnip.xyz",
+      "API_URL_FALLBACK": "https://ssl2.winsnip.xyz",
+      "NEXT_PUBLIC_API_URL": "https://ssl.winsnip.xyz",
+      "NEXT_PUBLIC_API_URL_FALLBACK": "https://ssl2.winsnip.xyz",
+      "NEXT_PUBLIC_BACKEND_URL": "https://ssl.winsnip.xyz",
+      "NEXT_PUBLIC_WINSCAN_URL": "https://winscan.winsnip.xyz",
+      "NEXT_PUBLIC_API_TIMEOUT": "8000",
+      "NEXT_PUBLIC_CACHE_TTL": "30000",
+      "NEXT_PUBLIC_DEFAULT_CHAIN": "paxi-mainnet"
+    }
+  }
+}
