@@ -45,7 +45,7 @@ export default function RootLayout({
         {/* Preload critical resources */}
         <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <LoadingScreen />
         <LanguageProvider>
           <WalletProvider>

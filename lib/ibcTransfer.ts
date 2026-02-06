@@ -202,7 +202,7 @@ export async function executeIBCTransfer(
       };
     }
 
-    // Create signing client
+    // Create signing client - Keplr handles EthAccount automatically
     let client;
     try {
       client = await SigningStargateClient.connectWithSigner(

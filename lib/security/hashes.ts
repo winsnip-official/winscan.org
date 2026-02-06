@@ -1,10 +1,10 @@
 /**
  * File integrity hashes - DO NOT MODIFY
- * Generated: 2026-02-03T17:28:33.163Z
+ * Generated: 2026-02-06T11:02:45.708Z
  */
 
 export const FILE_HASHES = {
-  "app/layout.tsx": "c70b2c2252b1863c1bcc0e0d809f94c5374e511a1dae6d5970fdca66010de417",
+  "app/layout.tsx": "2f4afa5326608e690f43ff2c95b0f7140dbfb3596dccfae2122498eb4e00b8eb",
   "components/Header.tsx": "9aaf4acfbcc53f3e2a997c8dc9c3815f737be0a0a946bf18d514f7eb5569c0f1",
   "components/Sidebar.tsx": "a6f86e20d6384be07cc245f77dc78c7879f15a73ab7bcfc87c7997a261ebc86e",
   "components/Footer.tsx": "d4b80f4100ce77da713642b4f67039d26458b57caa36d0e1169b9e6f27ae74e0",
@@ -13,4 +13,4 @@ export const FILE_HASHES = {
   "lib/apiClient.ts": "dc67e90908cb68cb6e24ff36ad7dcf6eb297add296c06635655b54f0a8b82d52"
 } as const;
 
-export const GENERATED_AT = '2026-02-03T17:28:33.163Z';
+export const GENERATED_AT = '2026-02-06T11:02:45.708Z';

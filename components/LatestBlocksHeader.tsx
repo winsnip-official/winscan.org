@@ -30,9 +30,20 @@ export default function LatestBlocksHeader({ selectedChain }: LatestBlocksHeader
       try {
         setIsLoading(true);
         const response = await fetch(`/api/blocks?chain=${selectedChain.chain_id || selectedChain.chain_name}&limit=5`);
-        if (!response.ok) throw new Error('Failed to fetch blocks');
+        
+        // Silent fail if API returns error
+        if (!response.ok) {
+          console.warn('Failed to fetch blocks:', response.status);
+          return;
+        }
         
         const data = await response.json();
+        
+        // Validate data
+        if (!Array.isArray(data) || data.length === 0) {
+          console.warn('No blocks data returned');
+          return;
+        }
         
         // Highlight new blocks
         if (blocks.length > 0 && data.length > 0) {
@@ -48,7 +59,8 @@ export default function LatestBlocksHeader({ selectedChain }: LatestBlocksHeader
         
         setBlocks(data);
       } catch (error) {
-        console.error('Error fetching blocks:', error);
+        console.warn('Error fetching blocks:', error);
+        // Silent fail - don't show error to user
       } finally {
         setIsLoading(false);
       }

@@ -486,16 +486,45 @@ export default function ValidatorDetailPage() {
     fetchValidatorData(true);
   }, [selectedChain?.chain_name, params?.address]);
 
-  // Auto-update disabled - only fetch on initial load
-  // useEffect(() => {
-  //   if (!selectedChain || !params?.address) return;
-  //   
-  //   const interval = setInterval(() => {
-  //     fetchValidatorData(false);
-  //   }, 30000);
+  // Auto-update uptime every 10 seconds for realtime visualization
+  useEffect(() => {
+    if (!selectedChain || !params?.address) return;
+    
+    const fetchUptimeRealtime = async () => {
+      try {
+        const uptimeRes = await fetchApi(
+          `/api/uptime/validator?chain=${selectedChain.chain_name}&address=${params.address}&blocks=100`,
+          { signal: AbortSignal.timeout(5000) }
+        );
+        
+        if (uptimeRes?.ok) {
+          const uptimeData = await uptimeRes.json();
+          if (uptimeData && uptimeData.blocks && Array.isArray(uptimeData.blocks)) {
+            setUptimeBlocks(uptimeData.blocks);
+            
+            const totalBlocks = uptimeData.blocks.length;
+            const signedCount = uptimeData.blocks.filter((block: any) => {
+              return block.signed === true || block.signed === 1 || block.signed === '1' || block.signed;
+            }).length;
+            const calculatedUptime = totalBlocks > 0 ? (signedCount / totalBlocks) * 100 : 0;
+            
+            setUptimePercentage(calculatedUptime);
+            console.log('🔄 [Uptime Realtime] Updated:', calculatedUptime.toFixed(2) + '%');
+          }
+        }
+      } catch (error) {
+        console.log('[Uptime Realtime] Failed to fetch');
+      }
+    };
+    
+    // Initial fetch
+    fetchUptimeRealtime();
+    
+    // Update every 10 seconds
+    const interval = setInterval(fetchUptimeRealtime, 10000);
 
-  //   return () => clearInterval(interval);
-  // }, [selectedChain, params, fetchValidatorData]);
+    return () => clearInterval(interval);
+  }, [selectedChain?.chain_name, params?.address]);
 
   // REMOVED: Duplicate uptime fetch - already handled in fetchValidatorData()
   // This was causing infinite loop because validator state changes triggered re-fetch
@@ -867,14 +896,19 @@ export default function ValidatorDetailPage() {
       if (selectedChain.api && selectedChain.api.length > 0) {
         for (const endpoint of selectedChain.api) {
           try {
-            // Try specific endpoint first
+            // Try specific endpoint first with timeout
             let unbondingUrl = `${endpoint.address}/cosmos/staking/v1beta1/delegators/${delegatorAddress}/unbonding_delegations/${validatorAddress}`;
-            let res = await fetch(unbondingUrl);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            let res = await fetch(unbondingUrl, { signal: controller.signal }).finally(() => clearTimeout(timeoutId));
             
             // If not implemented (code 12), try getting all unbonding delegations and filter
             if (!res.ok || res.status === 501) {
               unbondingUrl = `${endpoint.address}/cosmos/staking/v1beta1/delegators/${delegatorAddress}/unbonding_delegations`;
-              res = await fetch(unbondingUrl);
+              const controller2 = new AbortController();
+              const timeoutId2 = setTimeout(() => controller2.abort(), 5000);
+              res = await fetch(unbondingUrl, { signal: controller2.signal }).finally(() => clearTimeout(timeoutId2));
             }
             
             if (res.ok) {
@@ -1533,33 +1567,41 @@ export default function ValidatorDetailPage() {
               <div className="bg-[#111111] rounded-lg p-5 border border-gray-800 hover:border-emerald-500/50 transition-all duration-200">
                 <h3 className="text-lg font-semibold text-white mb-3">Validator uptime</h3>
                 
-                <div className="text-4xl font-bold text-white mb-4">
+                <div className="text-4xl font-bold text-emerald-400 mb-4">
                   {uptimePercentage > 0 ? `${uptimePercentage.toFixed(2)}%` : '99.98%'}
                 </div>
 
-                <div className="relative h-10 bg-[#0a0a0a] rounded-md overflow-hidden border border-gray-800">
-                  <div className="blocks-container absolute inset-0">
-                    <div className={`blocks-wrapper ${uptimeBlocks.length === 100 ? 'animated' : ''} flex gap-0 h-full`}>
-                      {(uptimeBlocks.length > 0 ? uptimeBlocks : Array.from({ length: 100 }, (_, i) => ({ 
-                        height: i, 
-                        signed: Math.random() > 0.001 
-                      }))).map((block, index) => (
-                        <div
-                          key={index}
-                          className={`flex-shrink-0 h-full transition-all duration-300 ${
-                            block.signed 
-                              ? 'bg-emerald-500 hover:bg-emerald-400' 
-                              : 'bg-red-500 hover:bg-red-400'
-                          }`}
-                          style={{
-                            width: '1%',
-                            minWidth: '8px'
-                          }}
-                          title={`Block ${block.height}: ${block.signed ? 'Signed' : 'Missed'}`}
-                        />
-                      ))}
+                {/* Uptime blocks grid - 10 rows x 10 columns = 100 blocks */}
+                <div className="grid grid-cols-[repeat(50,minmax(0,1fr))] gap-[2px] mb-3">
+                  {(uptimeBlocks.length > 0 ? uptimeBlocks : Array.from({ length: 100 }, (_, i) => ({ 
+                    height: i, 
+                    signed: Math.random() > 0.001 
+                  }))).map((block, index) => (
+                    <div
+                      key={index}
+                      className={`aspect-square rounded-sm transition-all duration-200 hover:scale-125 hover:z-10 cursor-help ${
+                        block.signed 
+                          ? 'bg-emerald-500 hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/50' 
+                          : 'bg-red-500 hover:bg-red-400 hover:shadow-lg hover:shadow-red-500/50'
+                      }`}
+                      title={`Block ${block.height}: ${block.signed ? 'Signed ✓' : 'Missed ✗'}`}
+                    />
+                  ))}
+                </div>
+                
+                {/* Legend */}
+                <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-800">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 bg-emerald-500 rounded-sm"></div>
+                      <span>Signed</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
+                      <span>Missed</span>
                     </div>
                   </div>
+                  <span className="text-gray-500">Last 100 blocks</span>
                 </div>
               </div>
             </div>

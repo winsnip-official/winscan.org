@@ -245,11 +245,11 @@ export default function ChainOverviewPage() {
       setIsRefreshing(true);
       try {
         const [blocksData, txData] = await Promise.all([
-          fetch(`/api/blocks?chain=${chainIdentifier}&limit=30`).then(r => r.json()),
-          fetch(`/api/transactions?chain=${chainIdentifier}&limit=10`).then(r => r.json())
+          fetch(`/api/blocks?chain=${chainIdentifier}&limit=30`).then(r => r.json()).catch(() => []),
+          fetch(`/api/transactions?chain=${chainIdentifier}&limit=10`).then(r => r.json()).catch(() => [])
         ]);
-        setBlocks(blocksData);
-        setTransactions(txData);
+        setBlocks(Array.isArray(blocksData) ? blocksData : []);
+        setTransactions(Array.isArray(txData) ? txData : []);
       } catch (err) {
         console.error('Refresh error:', err);
       } finally {
@@ -879,8 +879,8 @@ export default function ChainOverviewPage() {
               </div>
               {/* Latest Blocks & Transactions */}
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
-                <LatestBlocks blocks={blocks.slice(0, 10)} chainName={selectedChain?.chain_name || ''} />
-                <LatestTransactions transactions={transactions.slice(0, 10)} chainName={selectedChain?.chain_name || ''} asset={selectedChain?.assets[0]} />
+                <LatestBlocks blocks={Array.isArray(blocks) ? blocks.slice(0, 10) : []} chainName={selectedChain?.chain_name || ''} />
+                <LatestTransactions transactions={Array.isArray(transactions) ? transactions.slice(0, 10) : []} chainName={selectedChain?.chain_name || ''} asset={selectedChain?.assets[0]} />
               </div>
             </>
           )}
