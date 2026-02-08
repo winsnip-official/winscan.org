@@ -109,6 +109,9 @@ export default function Sidebar({ selectedChain }: SidebarProps) {
           { name: 'Assets', translationKey: 'menu.assets', path: `${chainPath}/assets`, icon: <Coins className="w-4 h-4" /> },
           { name: 'IBC Transfer', translationKey: 'menu.ibcTransfer', path: `${chainPath}/ibc-transfer`, icon: <ArrowRightLeft className="w-4 h-4" /> },
           { name: 'Relayers', translationKey: 'menu.relayers', path: `${chainPath}/relayers`, icon: <Network className="w-4 h-4" /> },
+          ...(selectedChain?.chain_name?.toLowerCase() === 'paxi-mainnet' ? [
+            { name: 'PRC20 Swap', translationKey: 'menu.prc20Swap', path: `${chainPath}/prc20/swap`, icon: <RefreshCw className="w-4 h-4" /> }
+          ] : [])
         ]
       },
       { name: 'Accounts', translationKey: 'menu.accounts', path: `${chainPath}/accounts`, icon: <Wallet className="w-5 h-5" /> },

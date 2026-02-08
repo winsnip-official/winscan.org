@@ -58,6 +58,7 @@ type TranslationKeys = {
   'menu.proposals': string;
   'menu.assets': string;
   'menu.accounts': string;
+  'menu.prc20Swap': string;
   'menu.bridge': string;
   'menu.bridge_relayers': string;
   'menu.relayers': string;
@@ -132,6 +133,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.proposals': 'Proposals',
     'menu.assets': 'Assets',
     'menu.accounts': 'Accounts',
+    'menu.prc20Swap': 'PRC20 Swap',
     'menu.bridge': 'Bridge',
     'menu.bridge_relayers': 'Relayers',
     'menu.relayers': 'Relayers',
@@ -205,6 +207,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.proposals': 'Proposal',
     'menu.assets': 'Aset',
     'menu.accounts': 'Akun',
+    'menu.prc20Swap': 'Tukar PRC20',
     'menu.bridge': 'Bridge',
     'menu.bridge_relayers': 'Relayer',
     'menu.relayers': 'Relayer',
@@ -278,6 +281,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.proposals': '提案',
     'menu.assets': '资产',
     'menu.accounts': '账户',
+    'menu.prc20Swap': 'PRC20交换',
     'menu.bridge': '跨链桥',
     'menu.bridge_relayers': '中继器',
     'menu.relayers': '中继器',
@@ -351,6 +355,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.proposals': '提案',
     'menu.assets': 'アセット',
     'menu.accounts': 'アカウント',
+    'menu.prc20Swap': 'PRC20スワップ',
     'menu.bridge': 'ブリッジ',
     'menu.bridge_relayers': 'リレイヤー',
     'menu.evm': 'EVMエクスプローラー',
@@ -424,6 +429,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.proposals': 'प्रस्ताव',
     'menu.assets': 'संपत्ति',
     'menu.accounts': 'खाते',
+    'menu.prc20Swap': 'PRC20 स्वैप',
     'menu.bridge': 'ब्रिज',
     'menu.bridge_relayers': 'रिलेयर',
     'menu.evm': 'ईवीएम एक्सप्लोरर',
@@ -497,6 +503,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.proposals': 'Предложения',
     'menu.assets': 'Активы',
     'menu.accounts': 'Аккаунты',
+    'menu.prc20Swap': 'PRC20 Обмен',
     'menu.bridge': 'Мост',
     'menu.bridge_relayers': 'Релейеры',
     'menu.evm': 'EVM Проводник',
@@ -570,6 +577,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'menu.proposals': 'Đề xuất',
     'menu.assets': 'Tài sản',
     'menu.accounts': 'Tài khoản',
+    'menu.prc20Swap': 'Hoán đổi PRC20',
     'menu.bridge': 'Cầu nối',
     'menu.bridge_relayers': 'Relayers',
     'menu.evm': 'Trình khám phá EVM',

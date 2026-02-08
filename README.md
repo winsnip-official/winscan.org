@@ -185,6 +185,50 @@ See [LICENSE](LICENSE) for full terms.
 
 Your sponsorship helps us add more chains, improve performance, and develop new features!
 
+### 💰 Donation Addresses
+
+Support us directly via crypto donations:
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+**🔷 EVM (Ethereum/BSC/Polygon)**
+
+```
+0x903c119b85750f851be45d915625d0bfd7181300
+```
+
+<sub>MetaMask, Trust Wallet, etc.</sub>
+
+</td>
+<td align="center" width="33%">
+
+**🟠 Bitcoin (BTC)**
+
+```
+bc1qqh6zwp8vwj5u5unp98jy4k320dy70n4v9ecqac
+```
+
+<sub>Any Bitcoin wallet</sub>
+
+</td>
+<td align="center" width="34%">
+
+**🟣 Solana (SOL)**
+
+```
+FrqjvcLTgEwW8uUtJPJNoHq7ASWgKXJS8g1GZ1YjvHos
+```
+
+<sub>Phantom, Solflare, etc.</sub>
+
+</td>
+</tr>
+</table>
+
+**Thank you for your support! 🙏**
+
 ---
 
 <div align="center">
