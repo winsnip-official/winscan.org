@@ -24,7 +24,7 @@
     ]
   },
   "codebase": {
-    "git_repo": "https://github.com/empe-io/empe-chain",
+    "git_repo": "https://github.com/empe-io/empe-chains",
     "recommended_version": "v1.0.0",
     "compatible_versions": [
       "v1.0.0"

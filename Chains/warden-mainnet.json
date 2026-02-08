@@ -31,6 +31,9 @@
       "provider": "Warden Protocol"
     }
   ],
+  "codebase": {
+    "git_repo": "https://github.com/warden-protocol/wardenprotocol"
+  },
   "sdk_version": "0.53.4",
   "coin_type": "118",
   "min_tx_fee": "0.025",

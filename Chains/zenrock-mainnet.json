@@ -34,6 +34,9 @@
       "tx_index": "on"
     }
   ],
+  "codebase": {
+    "git_repo": "https://github.com/Zenrock-Foundation/zrchain"
+  },
   "sdk_version": "0.50.13",
   "coin_type": "118",
   "min_tx_fee": "2.5",

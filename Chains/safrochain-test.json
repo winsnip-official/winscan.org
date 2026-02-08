@@ -24,7 +24,7 @@
     ]
   },
   "codebase": {
-    "git_repo": "https://github.com/safrochain/safro",
+    "git_repo": "https://github.com/Safrochain-Org/safrochain-node",
     "recommended_version": "v1.0.0",
     "compatible_versions": ["v1.0.0"],
     "cosmos_sdk_version": "0.46.1",

@@ -40,14 +40,6 @@
       "provider": "Polkachu"
     },
     {
-      "address": "https://api.injective.nodestake.org",
-      "provider": "NodeStake"
-    },
-    {
-      "address": "https://api-injective.cosmos-spaces.cloud",
-      "provider": "Cosmos Spaces"
-    },
-    {
       "address": "https://injective-rest.publicnode.com",
       "provider": "PublicNode"
     }
@@ -56,14 +48,6 @@
     {
       "address": "https://injective-rpc.polkachu.com",
       "provider": "Polkachu"
-    },
-    {
-      "address": "https://rpc.injective.nodestake.org",
-      "provider": "NodeStake"
-    },
-    {
-      "address": "https://rpc-injective.cosmos-spaces.cloud",
-      "provider": "Cosmos Spaces"
     },
     {
       "address": "https://injective-rpc.publicnode.com",

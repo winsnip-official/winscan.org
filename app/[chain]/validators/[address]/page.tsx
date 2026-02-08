@@ -528,7 +528,9 @@ export default function ValidatorDetailPage() {
 
   // REMOVED: Duplicate uptime fetch - already handled in fetchValidatorData()
   // This was causing infinite loop because validator state changes triggered re-fetch
-  // Uptime is now fetched in 2 places within fetchValidatorData():
+  // Uptime is now fetched in 2 places within fetchValidatorData():
+
+
   // Both now recalculate from blocks array instead of using backend cached value
 
   // Fetch validators list for redelegate
@@ -899,14 +901,25 @@ export default function ValidatorDetailPage() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
             
-            let res = await fetch(unbondingUrl, { signal: controller.signal }).finally(() => clearTimeout(timeoutId));
+            let res;
+            try {
+              res = await fetch(unbondingUrl, { signal: controller.signal }).finally(() => clearTimeout(timeoutId));
+            } catch (fetchError) {
+              console.warn('Unbonding fetch failed:', fetchError);
+              continue; // Try next endpoint
+            }
             
             // If not implemented (code 12), try getting all unbonding delegations and filter
             if (!res.ok || res.status === 501) {
               unbondingUrl = `${endpoint.address}/cosmos/staking/v1beta1/delegators/${delegatorAddress}/unbonding_delegations`;
               const controller2 = new AbortController();
               const timeoutId2 = setTimeout(() => controller2.abort(), 5000);
-              res = await fetch(unbondingUrl, { signal: controller2.signal }).finally(() => clearTimeout(timeoutId2));
+              try {
+                res = await fetch(unbondingUrl, { signal: controller2.signal }).finally(() => clearTimeout(timeoutId2));
+              } catch (fetchError) {
+                console.warn('Unbonding fetch (all) failed:', fetchError);
+                continue; // Try next endpoint
+              }
             }
             
             if (res.ok) {

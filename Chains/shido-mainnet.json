@@ -39,6 +39,9 @@
       "provider": "Shido"
     }
   ],
+  "codebase": {
+    "git_repo": "https://github.com/ShidoGlobal"
+  },
   "sdk_version": "0.47.4",
   "coin_type": "60",
   "min_tx_fee": "250000000",

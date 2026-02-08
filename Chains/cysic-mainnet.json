@@ -15,6 +15,9 @@
       "provider": "Cysic Network"
     }
   ],
+  "codebase": {
+    "git_repo": "https://github.com/cysic-labs"
+  },
   "sdk_version": "0.50.0",
   "coin_type": "60",
   "min_tx_fee": "25000000000",

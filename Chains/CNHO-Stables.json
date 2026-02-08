@@ -36,20 +36,12 @@
     {
       "address": "https://api.cnho.io",
       "provider": "CNHO Official"
-    },
-    {
-      "address": "https://api-cnho.cosmos-spaces.cloud",
-      "provider": "Cosmos Spaces"
     }
   ],
   "rpc": [
     {
       "address": "https://rpc.cnho.io",
       "provider": "CNHO Official"
-    },
-    {
-      "address": "https://rpc-cnho.cosmos-spaces.cloud",
-      "provider": "Cosmos Spaces"
     }
   ],
   "assets": [

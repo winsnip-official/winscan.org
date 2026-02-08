@@ -29,7 +29,7 @@
     ]
   },
   "codebase": {
-    "git_repo": "https://github.com/RepublicAI/republic",
+    "git_repo": "https://github.com/RepublicAI/networks",
     "recommended_version": "v0.1.0",
     "compatible_versions": ["v0.1.0"],
     "cosmos_sdk_version": "0.47.0",

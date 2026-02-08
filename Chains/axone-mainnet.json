@@ -24,7 +24,7 @@
     ]
   },
   "codebase": {
-    "git_repo": "https://github.com/axone-protocol/axone",
+    "git_repo": "https://github.com/axone-protocol/axoned",
     "recommended_version": "v9.0.0",
     "compatible_versions": [
       "v9.0.0"

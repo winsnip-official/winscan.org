@@ -40,20 +40,12 @@
     {
       "address": "https://atomone-api.allinbits.com",
       "provider": "All in Bits"
-    },
-    {
-      "address": "https://atomone-api.polkachu.com",
-      "provider": "Polkachu"
     }
   ],
   "rpc": [
     {
       "address": "https://rpc-atomone.winnode.xyz",
       "provider": "Winnode"
-    },
-    {
-      "address": "https://atomone-rpc.polkachu.com",
-      "provider": "Polkachu"
     }
   ],
   "assets": [

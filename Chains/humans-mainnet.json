@@ -42,10 +42,6 @@
       "provider": "ITRocket"
     },
     {
-      "address": "https://humans-rest.staketab.org",
-      "provider": "Staketab"
-    },
-    {
       "address": "https://humans-api.noders.services",
       "provider": "[NODERS]TEAM"
     }
@@ -58,10 +54,6 @@
     {
       "address": "https://humans-mainnet-rpc.itrocket.net",
       "provider": "ITRocket"
-    },
-    {
-      "address": "https://humans-rpc.staketab.org:443",
-      "provider": "Staketab"
     },
     {
       "address": "https://humans-rpc.noders.services",

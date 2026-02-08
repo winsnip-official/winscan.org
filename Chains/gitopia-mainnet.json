@@ -36,36 +36,12 @@
     {
       "address": "https://gitopia-api.polkachu.com",
       "provider": "Polkachu"
-    },
-    {
-      "address": "https://rest.lavenderfive.com/gitopia",
-      "provider": "Lavender.Five Nodes"
-    },
-    {
-      "address": "https://gitopia-rest.staketab.org",
-      "provider": "Staketab"
-    },
-    {
-      "address": "https://api-gitopia.winnode.xyz",
-      "provider": "Winnode"
     }
   ],
   "rpc": [
     {
       "address": "https://gitopia-rpc.polkachu.com",
       "provider": "Polkachu"
-    },
-    {
-      "address": "https://rpc.lavenderfive.com/gitopia",
-      "provider": "Lavender.Five Nodes"
-    },
-    {
-      "address": "https://gitopia-rpc.staketab.org",
-      "provider": "Staketab"
-    },
-    {
-      "address": "https://api-gitopia.winnode.xyz",
-      "provider": "Winnode"
     }
   ],
   "assets": [

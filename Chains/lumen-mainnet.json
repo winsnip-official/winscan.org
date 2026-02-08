@@ -23,6 +23,9 @@
       }
     ]
   },
+  "codebase": {
+    "git_repo": "https://github.com/network-lumen/blockchain"
+  },
   "rpc": [
     {
       "address": "https://rpc-lumen.winnode.xyz",

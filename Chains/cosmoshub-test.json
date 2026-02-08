@@ -26,16 +26,13 @@
   "codebase": {
     "git_repo": "https://github.com/cosmos/gaia",
     "recommended_version": "v20.0.0",
-    "compatible_versions": ["v20.0.0"],
+    "compatible_versions": [
+      "v20.0.0"
+    ],
     "cosmos_sdk_version": "0.53.3",
     "tendermint_version": "0.38.0"
   },
-  "api": [
-    {
-      "address": "https://rest.sentry-01.theta-testnet.polypore.xyz",
-      "provider": "Hypha"
-    }
-  ],
+  "api": [],
   "rpc": [
     {
       "address": "https://cosmoshubt.tendermintrpc.lava.build:443",

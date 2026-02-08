@@ -24,6 +24,7 @@
     ]
   },
   "codebase": {
+    "git_repo": "https://github.com/atomone-hub/atomone",
     "cosmos_sdk_version": "0.47.16"
   },
   "api": [
@@ -34,22 +35,9 @@
     {
       "address": "https://api-testnet-atomone.nodeist.net",
       "provider": "Nodeist"
-    },
-    {
-      "address": "https://atomone-testnet-api.ibs.team",
-      "provider": "Inter Blockchain Services"
-    },
-    {
-      "address": "https://api-test.atomone.vinjan.xyz",
-      "provider": "Vinjan"
     }
   ],
-  "rpc": [
-    {
-      "address": "https://atomone-testnet-rpc.ibs.team",
-      "provider": "Inter Blockchain Services"
-    }
-  ],
+  "rpc": [],
   "assets": [
     {
       "base": "uatone",
