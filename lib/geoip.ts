@@ -114,7 +114,6 @@ async function lookupIPViaAPI(ip: string): Promise<{
   provider?: string;
 } | null> {
   try {
-    console.log('[GeoIP API] Fetching data for', ip);
     // ip-api.com free tier: 45 requests per minute
     const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,city,lat,lon,isp,org,as,asname`, {
       signal: AbortSignal.timeout(5000)
@@ -139,7 +138,6 @@ async function lookupIPViaAPI(ip: string): Promise<{
     const longitude = data.lon || 0;
 
     if (latitude === 0 && longitude === 0) {
-      console.log('[GeoIP API] No valid coordinates for', ip);
       return null;
     }
 
@@ -148,8 +146,6 @@ async function lookupIPViaAPI(ip: string): Promise<{
     const asn = asMatch ? asMatch[1] : undefined;
     const organization = data.org || data.isp || data.asname;
     const provider = detectProvider(ip, asn, organization);
-
-    console.log('[GeoIP API] ✅ Found location for', ip, ':', { city, country, provider });
 
     return {
       city,
@@ -165,6 +161,73 @@ async function lookupIPViaAPI(ip: string): Promise<{
   }
 }
 
+// Batch lookup via API (for when database is not available)
+export async function lookupIPBatchViaAPI(ips: string[]): Promise<Map<string, any>> {
+  const results = new Map<string, any>();
+  
+  try {
+    // ip-api.com supports batch requests (up to 100 IPs)
+    // POST to http://ip-api.com/batch
+    const batchSize = 100;
+    const batches = [];
+    
+    for (let i = 0; i < ips.length; i += batchSize) {
+      batches.push(ips.slice(i, i + batchSize));
+    }
+    
+    for (const batch of batches) {
+      try {
+        const response = await fetch('http://ip-api.com/batch?fields=status,message,query,country,countryCode,city,lat,lon,isp,org,as,asname', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(batch),
+          signal: AbortSignal.timeout(10000)
+        });
+        
+        if (!response.ok) {
+          console.error('[GeoIP API Batch] Request failed:', response.status);
+          continue;
+        }
+        
+        const data = await response.json();
+        
+        for (const item of data) {
+          if (item.status === 'success') {
+            const ip = item.query;
+            const city = item.city || 'Unknown';
+            const country = item.country || 'Unknown';
+            const countryCode = item.countryCode || 'XX';
+            const latitude = item.lat || 0;
+            const longitude = item.lon || 0;
+            
+            if (latitude !== 0 || longitude !== 0) {
+              const asMatch = item.as?.match(/^AS(\d+)/);
+              const asn = asMatch ? asMatch[1] : undefined;
+              const organization = item.org || item.isp || item.asname;
+              const provider = detectProvider(ip, asn, organization);
+              
+              results.set(ip, {
+                city,
+                country,
+                countryCode,
+                latitude,
+                longitude,
+                provider
+              });
+            }
+          }
+        }
+      } catch (batchError: any) {
+        console.error('[GeoIP API Batch] Error:', batchError.message);
+      }
+    }
+  } catch (error: any) {
+    console.error('[GeoIP API Batch] Fatal error:', error.message);
+  }
+  
+  return results;
+}
+
 // Lookup IP address and get location
 export async function lookupIP(ip: string): Promise<{
   city: string;
@@ -177,56 +240,55 @@ export async function lookupIP(ip: string): Promise<{
   // Try local database first
   try {
     const lookup = await initCountry();
-    if (lookup) {
-      const result = lookup.get(ip);
-      if (result) {
-        const country = result.country?.names?.en || 'Unknown';
-        const countryCode = result.country?.iso_code || 'XX';
-        
-        // Use capital city coordinates as approximate location
-        const capital = COUNTRY_CAPITALS[countryCode] || { city: country, lat: 0, lon: 0 };
-        
-        if (capital.lat !== 0 || capital.lon !== 0) {
-          // Get ASN data for provider detection
-          let provider = 'Unknown';
-          try {
-            const asnDb = await initASN();
-            if (asnDb) {
-              const asnResult = asnDb.get(ip);
-              if (asnResult) {
-                const asn = asnResult.autonomous_system_number?.toString();
-                const organization = asnResult.autonomous_system_organization;
-                provider = detectProvider(ip, asn, organization);
-              } else {
-                provider = detectProvider(ip);
-              }
+    if (!lookup) {
+      // Database not available, use API immediately
+      return lookupIPViaAPI(ip);
+    }
+
+    const result = lookup.get(ip);
+    if (result) {
+      const country = result.country?.names?.en || 'Unknown';
+      const countryCode = result.country?.iso_code || 'XX';
+      
+      // Use capital city coordinates as approximate location
+      const capital = COUNTRY_CAPITALS[countryCode] || { city: country, lat: 0, lon: 0 };
+      
+      if (capital.lat !== 0 || capital.lon !== 0) {
+        // Get ASN data for provider detection
+        let provider = 'Unknown';
+        try {
+          const asnDb = await initASN();
+          if (asnDb) {
+            const asnResult = asnDb.get(ip);
+            if (asnResult) {
+              const asn = asnResult.autonomous_system_number?.toString();
+              const organization = asnResult.autonomous_system_organization;
+              provider = detectProvider(ip, asn, organization);
             } else {
               provider = detectProvider(ip);
             }
-          } catch (asnError: any) {
-            console.warn('[GeoIP] ASN lookup failed for', ip, ':', asnError.message);
+          } else {
             provider = detectProvider(ip);
           }
-
-          console.log('[GeoIP DB] ✅ Found location for', ip, ':', { country, city: capital.city, provider });
-
-          return {
-            city: capital.city,
-            country,
-            countryCode,
-            latitude: capital.lat,
-            longitude: capital.lon,
-            provider
-          };
+        } catch (asnError: any) {
+          provider = detectProvider(ip);
         }
+
+        return {
+          city: capital.city,
+          country,
+          countryCode,
+          latitude: capital.lat,
+          longitude: capital.lon,
+          provider
+        };
       }
     }
   } catch (error: any) {
-    console.warn('[GeoIP DB] Lookup failed, falling back to API:', error.message);
+    console.warn('[GeoIP DB] Error, using API fallback:', error.message);
   }
 
-  // Fallback to API if database lookup failed
-  console.log('[GeoIP] Using API fallback for', ip);
+  // Fallback to API if database lookup failed or returned no data
   return lookupIPViaAPI(ip);
 }
 
