@@ -155,6 +155,7 @@ export default function Sidebar({ selectedChain }: SidebarProps) {
         icon: <Settings className="w-5 h-5" />,
         subItems: [
           { name: 'Endpoint Checker', translationKey: 'menu.rpcChecker', path: `${chainPath}/endpoint-checker`, icon: <Activity className="w-4 h-4" /> },
+          { name: 'IP Lookup', translationKey: 'menu.ipLookup', path: `${chainPath}/ip-lookup`, icon: <Globe className="w-4 h-4" /> },
           { name: 'Parameters', translationKey: 'menu.parameters', path: `${chainPath}/parameters`, icon: <Settings className="w-4 h-4" /> },
           ...(selectedChain?.chain_name?.includes('lumera') ? [
             { name: 'Cascade Storage', translationKey: 'menu.cascade', path: `${chainPath}/cascade`, icon: <Cloud className="w-4 h-4" /> }
