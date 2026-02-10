@@ -13,6 +13,26 @@ interface ValidatorLocation {
   monikers?: string[];
 }
 
+// In-memory cache for IP lookups (valid for 5 minutes)
+const ipCache = new Map<string, { location: any; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function lookupIPWithCache(ip: string): Promise<any> {
+  const now = Date.now();
+  const cached = ipCache.get(ip);
+  
+  if (cached && (now - cached.timestamp) < CACHE_TTL) {
+    return cached.location;
+  }
+  
+  const location = await lookupIP(ip);
+  if (location) {
+    ipCache.set(ip, { location, timestamp: now });
+  }
+  
+  return location;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -80,69 +100,78 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Extract IPs and do GeoIP lookup
+    // Extract all IPs first
+    const peerIPs: Array<{ ip: string; moniker: string; remoteIP: string }> = [];
+    for (const peer of peers) {
+      const remoteIP = peer.remote_ip || peer.node_info?.listen_addr;
+      if (!remoteIP) continue;
+      
+      const ip = extractIP(remoteIP);
+      if (!ip) continue;
+      
+      peerIPs.push({
+        ip,
+        moniker: peer.node_info?.moniker || 'unknown',
+        remoteIP
+      });
+    }
+
+    console.log(`[Peers API] Extracted ${peerIPs.length} valid IPs, starting batch lookup...`);
+
+    // Batch lookup with Promise.all for parallel processing
+    const startTime = Date.now();
+    const lookupPromises = peerIPs.map(async ({ ip, moniker, remoteIP }) => {
+      try {
+        const location = await lookupIPWithCache(ip);
+        return { ip, moniker, remoteIP, location };
+      } catch (error: any) {
+        console.error(`[Peers API] Error looking up ${ip}:`, error.message);
+        return { ip, moniker, remoteIP, location: null };
+      }
+    });
+
+    const results = await Promise.all(lookupPromises);
+    const lookupTime = Date.now() - startTime;
+    console.log(`[Peers API] ✅ Completed ${results.length} lookups in ${lookupTime}ms`);
+
+    // Process results and group by location
     const locationMap = new Map<string, ValidatorLocation>();
     let successfulLookups = 0;
     let failedLookups = 0;
+    let cachedLookups = 0;
 
-    for (const peer of peers) {
-      try {
-        // Extract IP from remote_ip or listen_addr
-        const remoteIP = peer.remote_ip || peer.node_info?.listen_addr;
-        if (!remoteIP) {
-          console.warn(`[Peers API] Peer has no IP:`, peer.node_info?.moniker || 'unknown');
-          failedLookups++;
-          continue;
-        }
-
-        const ip = extractIP(remoteIP);
-        if (!ip) {
-          console.warn(`[Peers API] Could not extract IP from: ${remoteIP}`);
-          failedLookups++;
-          continue;
-        }
-
-        console.log(`[Peers API] Looking up IP: ${ip} (from ${remoteIP})`);
-
-        // Lookup location
-        const location = await lookupIP(ip);
-        if (!location) {
-          console.warn(`[Peers API] GeoIP lookup failed for: ${ip}`);
-          failedLookups++;
-          continue;
-        }
-
-        console.log(`[Peers API] ✅ Found location for ${ip}: ${location.city}, ${location.country} (${location.provider || 'Unknown'})`);
-        successfulLookups++;
-
-        // Create location key including provider for better grouping
-        const locationKey = `${location.city},${location.country},${location.provider || 'Unknown'}`;
-
-        if (locationMap.has(locationKey)) {
-          const existing = locationMap.get(locationKey)!;
-          existing.count++;
-          if (peer.node_info?.moniker) {
-            existing.monikers?.push(peer.node_info.moniker);
-          }
-        } else {
-          locationMap.set(locationKey, {
-            city: location.city,
-            country: location.country,
-            coordinates: [location.longitude, location.latitude],
-            count: 1,
-            provider: location.provider || 'Unknown',
-            monikers: peer.node_info?.moniker ? [peer.node_info.moniker] : []
-          });
-        }
-      } catch (error: any) {
-        console.error(`[Peers API] Error processing peer:`, error.message);
+    for (const { ip, moniker, location } of results) {
+      if (!location) {
         failedLookups++;
+        continue;
+      }
+
+      successfulLookups++;
+
+      // Create location key including provider for better grouping
+      const locationKey = `${location.city},${location.country},${location.provider || 'Unknown'}`;
+
+      if (locationMap.has(locationKey)) {
+        const existing = locationMap.get(locationKey)!;
+        existing.count++;
+        if (moniker && moniker !== 'unknown') {
+          existing.monikers?.push(moniker);
+        }
+      } else {
+        locationMap.set(locationKey, {
+          city: location.city,
+          country: location.country,
+          coordinates: [location.longitude, location.latitude],
+          count: 1,
+          provider: location.provider || 'Unknown',
+          monikers: moniker && moniker !== 'unknown' ? [moniker] : []
+        });
       }
     }
 
     const locations = Array.from(locationMap.values());
 
-    console.log(`[Peers API] ✅ Mapped ${locations.length} unique locations for ${chain} (${successfulLookups} successful, ${failedLookups} failed lookups)`);
+    console.log(`[Peers API] ✅ Mapped ${locations.length} unique locations for ${chain} (${successfulLookups} successful, ${failedLookups} failed, ${ipCache.size} cached)`);
 
     return NextResponse.json({
       success: true,
@@ -152,7 +181,9 @@ export async function GET(request: NextRequest) {
       cached: false,
       stats: {
         successfulLookups,
-        failedLookups
+        failedLookups,
+        cachedLookups: ipCache.size,
+        lookupTimeMs: lookupTime
       }
     }, {
       headers: {
