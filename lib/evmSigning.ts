@@ -428,7 +428,8 @@ export async function signTransactionForEvm(
 
 export async function broadcastTransaction(
   restUrl: string,
-  txRaw: any
+  txRaw: any,
+  chainId?: string
 ): Promise<any> {
   const { TxRaw } = await import('cosmjs-types/cosmos/tx/v1beta1/tx');
   const { AuthInfo } = await import('cosmjs-types/cosmos/tx/v1beta1/tx');
@@ -449,10 +450,19 @@ export async function broadcastTransaction(
   }
   
   console.log('📡 Broadcasting transaction...', {
-    txBytesLength: txBytes.length
+    txBytesLength: txBytes.length,
+    chainId
   });
   
-  const response = await fetch(`${restUrl}/cosmos/tx/v1beta1/txs`, {
+  // Use proxy API to avoid CORS issues
+  const useProxy = typeof window !== 'undefined' && chainId;
+  const broadcastUrl = useProxy 
+    ? `/api/broadcast?chain=${chainId}`
+    : `${restUrl}/cosmos/tx/v1beta1/txs`;
+  
+  console.log('📡 Broadcast URL:', broadcastUrl, useProxy ? '(via proxy)' : '(direct)');
+  
+  const response = await fetch(broadcastUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

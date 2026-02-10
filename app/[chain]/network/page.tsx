@@ -201,19 +201,22 @@ export default function NetworkPage() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     
-    Promise.all([
+    Promise.all([
+
       fetch(`/api/network?chain=${chainIdentifier}`, { signal: controller.signal })
         .then(res => res.json())
         .catch(err => {
           console.error('[Network] Network API error:', err);
           return null;
-        }),
-      fetch(`/api/network/validators?chain=${chainIdentifier}`, { signal: controller.signal })
+        }),
+
+      fetch(`/api/network/peers?chain=${chainIdentifier}`, { signal: controller.signal })
         .then(res => res.json())
         .catch(err => {
-          console.error('[Network] Locations API error:', err);
+          console.error('[Network] Peers API error:', err);
           return null;
-        }),
+        }),
+
       validators.length === 0
         ? fetch(`/api/validators?chain=${chainIdentifier}`, { signal: controller.signal })
             .then(res => res.json())

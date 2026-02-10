@@ -31,6 +31,9 @@ yarn-error.log*
 next-env.d.ts
 .integrity-manifest.json
 
+# GeoIP database (decompressed from .gz)
+data/GeoLite2-City.mmdb
+
 # Private security notes (do not upload)
 SECURITY-NOTES.md
 Telegram

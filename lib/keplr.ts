@@ -1113,7 +1113,7 @@ export async function executeStaking(
         );
         
         // Broadcast transaction
-        const result = await broadcastTransaction(restEndpoint, signedTx);
+        const result = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         return { success: true, txHash: result.txhash };
       } catch (evmError: any) {
@@ -1302,7 +1302,7 @@ export async function executeWithdrawAll(
           false // Disable simulation
         );
         
-        const result = await broadcastTransaction(restEndpoint, signedTx);
+        const result = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         console.log('✅ EVM transaction successful!');
         console.log('Transaction hash:', result.txhash);
@@ -1487,7 +1487,7 @@ export async function executeWithdrawAllValidators(
           false // Disable simulation
         );
         
-        const result = await broadcastTransaction(restEndpoint, signedTx);
+        const result = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         console.log('✅ EVM transaction successful!');
         console.log('Transaction hash:', result.txhash);
@@ -1736,7 +1736,7 @@ export async function executeSend(
           coinType
         );
         
-        const result = await broadcastTransaction(restEndpoint, signedTx);
+        const result = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         console.log('✅ EVM transaction successful!');
         console.log('Transaction hash:', result.txhash);
@@ -1972,7 +1972,7 @@ export async function executeVote(
           coinType
         );
         
-        const result = await broadcastTransaction(restEndpoint, signedTx);
+        const result = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         console.log('✅ EVM transaction successful!');
         console.log('Transaction hash:', result.txhash);
@@ -2174,7 +2174,7 @@ export async function executeUnjail(
           registry
         );
         
-        const result = await broadcastTransaction(restEndpoint, signedTx);
+        const result = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         console.log('✅ EVM transaction successful!');
         console.log('Transaction hash:', result.txhash);
@@ -2379,7 +2379,7 @@ export async function executeEditValidatorCommission(
           registry
         );
         
-        const result = await broadcastTransaction(restEndpoint, signedTx);
+        const result = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         console.log('✅ EVM transaction successful!');
         console.log('Transaction hash:', result.txhash);
@@ -3104,7 +3104,7 @@ export async function enableAutoCompound(
           clientOptions.registry
         );
         
-        const broadcastResult = await broadcastTransaction(restEndpoint, txRaw);
+        const broadcastResult = await broadcastTransaction(restEndpoint, txRaw, chainId);
         
         result = {
           code: broadcastResult.code,
@@ -3365,7 +3365,7 @@ export async function disableAutoCompound(
         );
         
         // Broadcast transaction
-        const broadcastResult = await broadcastTransaction(restEndpoint, signedTx);
+        const broadcastResult = await broadcastTransaction(restEndpoint, signedTx, chainId);
         
         if (broadcastResult.code === 0 || !broadcastResult.code) {
           // Update localStorage
